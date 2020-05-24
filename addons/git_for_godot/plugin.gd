@@ -2,7 +2,7 @@ tool
 extends EditorPlugin
 
 
-const MainPanel = preload("res://addons/git_for_godot/main_screen/main_panel.tscn")
+const MainPanel = preload("res://addons/git_for_godot/history_main_screen/history_main_screen.tscn")
 
 var main_panel_instance
 
@@ -35,4 +35,4 @@ func get_plugin_name():
 
 func get_plugin_icon():
 	# Must return some kind of Texture for the icon.
-	return preload("res://addons/git_for_godot/main_screen/Git-icon-white.svg")
+	return preload("res://addons/git_for_godot/history_main_screen/Git-icon-white.svg")
