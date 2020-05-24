@@ -18,6 +18,10 @@ _global_script_class_icons={
 config/name="GitForGodot"
 config/icon="res://icon.png"
 
+[editor_plugins]
+
+enabled=PoolStringArray( "git_for_godot" )
+
 [rendering]
 
 quality/driver/driver_name="GLES2"
