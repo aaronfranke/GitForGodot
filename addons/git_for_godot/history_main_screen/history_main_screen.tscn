@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://addons/git_for_godot/history_main_screen/git_history.gd" type="Script" id=1]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/branch.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/git_for_godot/theme.tres" type="Theme" id=3]
+[ext_resource path="res://addons/git_for_godot/history_main_screen/history_main_screen.gd" type="Script" id=4]
 
 [node name="HistoryMainScreen" type="MarginContainer"]
 anchor_right = 1.0
@@ -13,6 +14,7 @@ custom_constants/margin_right = 5
 custom_constants/margin_top = 5
 custom_constants/margin_left = 5
 custom_constants/margin_bottom = 5
+script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -23,7 +25,7 @@ margin_top = 5.0
 margin_right = 1019.0
 margin_bottom = 595.0
 size_flags_vertical = 3
-color = Color( 0.14902, 0.172549, 0.231373, 1 )
+color = Color( 0.12549, 0.145098, 0.192157, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -31,19 +33,19 @@ __meta__ = {
 [node name="MarginContainer" type="MarginContainer" parent="ColorRect"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_constants/margin_right = 5
-custom_constants/margin_top = 5
-custom_constants/margin_left = 5
-custom_constants/margin_bottom = 5
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MarginContainer"]
-margin_left = 5.0
-margin_top = 5.0
-margin_right = 1009.0
-margin_bottom = 585.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 1004.0
+margin_bottom = 580.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -51,15 +53,15 @@ __meta__ = {
 }
 
 [node name="Control" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer"]
-margin_right = 1004.0
+margin_right = 994.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 0, 32 )
 size_flags_horizontal = 3
 alignment = 1
 
 [node name="Fetch" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/Control"]
-margin_left = 435.0
-margin_right = 482.0
+margin_left = 430.0
+margin_right = 477.0
 margin_bottom = 32.0
 text = "Fetch"
 __meta__ = {
@@ -67,8 +69,8 @@ __meta__ = {
 }
 
 [node name="Pull" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/Control"]
-margin_left = 486.0
-margin_right = 522.0
+margin_left = 481.0
+margin_right = 517.0
 margin_bottom = 32.0
 text = "Pull"
 __meta__ = {
@@ -76,8 +78,8 @@ __meta__ = {
 }
 
 [node name="Push" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/Control"]
-margin_left = 526.0
-margin_right = 569.0
+margin_left = 521.0
+margin_right = 564.0
 margin_bottom = 32.0
 text = "Push"
 __meta__ = {
@@ -86,8 +88,8 @@ __meta__ = {
 
 [node name="ScrollContainer" type="ScrollContainer" parent="ColorRect/MarginContainer/VBoxContainer"]
 margin_top = 36.0
-margin_right = 1004.0
-margin_bottom = 580.0
+margin_right = 994.0
+margin_bottom = 570.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 scroll_horizontal_enabled = false
@@ -96,68 +98,68 @@ __meta__ = {
 }
 
 [node name="GitHistory" type="HSplitContainer" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer"]
-margin_right = 1004.0
-margin_bottom = 544.0
+margin_right = 994.0
+margin_bottom = 534.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 1 )
 
 [node name="Branches" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory"]
 margin_right = 200.0
-margin_bottom = 544.0
+margin_bottom = 534.0
 rect_min_size = Vector2( 200, 0 )
-custom_constants/separation = 10
+custom_constants/separation = 4
 
 [node name="Branch" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
 margin_right = 200.0
-margin_bottom = 32.0
+margin_bottom = 26.0
 
 [node name="Branch2" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
-margin_top = 42.0
+margin_top = 30.0
 margin_right = 200.0
-margin_bottom = 74.0
+margin_bottom = 56.0
 
 [node name="Branch3" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
-margin_top = 84.0
+margin_top = 60.0
+margin_right = 200.0
+margin_bottom = 86.0
+
+[node name="Branch4" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
+margin_top = 90.0
 margin_right = 200.0
 margin_bottom = 116.0
 
-[node name="Branch4" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
-margin_top = 126.0
-margin_right = 200.0
-margin_bottom = 158.0
-
 [node name="Branch5" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
-margin_top = 168.0
+margin_top = 120.0
 margin_right = 200.0
-margin_bottom = 200.0
+margin_bottom = 146.0
 
 [node name="Branch6" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
-margin_top = 210.0
+margin_top = 150.0
 margin_right = 200.0
-margin_bottom = 242.0
+margin_bottom = 176.0
 
 [node name="Commits" type="HSplitContainer" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory"]
 margin_left = 208.0
-margin_right = 1004.0
-margin_bottom = 544.0
+margin_right = 994.0
+margin_bottom = 534.0
 
 [node name="GraphHolder" type="ScrollContainer" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits"]
 margin_right = 200.0
-margin_bottom = 544.0
+margin_bottom = 534.0
 rect_min_size = Vector2( 200, 0 )
 scroll_vertical_enabled = false
 
 [node name="Graph" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/GraphHolder"]
 margin_right = 200.0
-margin_bottom = 544.0
+margin_bottom = 534.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_constants/separation = 10
+custom_constants/separation = 4
 
 [node name="Names" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits"]
 margin_left = 208.0
-margin_right = 796.0
-margin_bottom = 544.0
+margin_right = 786.0
+margin_bottom = 534.0
 rect_min_size = Vector2( 200, 0 )
-custom_constants/separation = 10
+custom_constants/separation = 4

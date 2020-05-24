@@ -2,22 +2,28 @@ tool
 extends EditorPlugin
 
 
-const MainPanel = preload("res://addons/git_for_godot/history_main_screen/history_main_screen.tscn")
+const MainScreen = preload("res://addons/git_for_godot/history_main_screen/history_main_screen.tscn")
+const CommitDock = preload("res://addons/git_for_godot/commit_dock/commit_dock.tscn")
 
-var main_panel_instance
+var main_screen_instance
+var commit_dock_instance
 
 
 func _enter_tree():
-	main_panel_instance = MainPanel.instance()
+	main_screen_instance = MainScreen.instance()
+	commit_dock_instance = CommitDock.instance()
 	# Add the main panel to the editor's main viewport.
-	get_editor_interface().get_editor_viewport().add_child(main_panel_instance)
+	get_editor_interface().get_editor_viewport().add_child(main_screen_instance)
 	# Hide the main panel. Very much required.
 	make_visible(false)
 
 
 func _exit_tree():
-	if main_panel_instance:
-		main_panel_instance.queue_free()
+	remove_control_from_docks(commit_dock_instance)
+	if commit_dock_instance:
+		commit_dock_instance.queue_free()
+	if main_screen_instance:
+		main_screen_instance.queue_free()
 
 
 func has_main_screen():
@@ -25,8 +31,13 @@ func has_main_screen():
 
 
 func make_visible(visible):
-	if main_panel_instance:
-		main_panel_instance.visible = visible
+	if visible:
+		add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_BL, commit_dock_instance)
+		hide_bottom_panel()
+	else:
+		remove_control_from_docks(commit_dock_instance)
+	if main_screen_instance:
+		main_screen_instance.visible = visible
 
 
 func get_plugin_name():
