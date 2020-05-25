@@ -27,7 +27,7 @@ __meta__ = {
 [node name="StageStatus" type="Label" parent="VBoxContainer"]
 margin_right = 320.0
 margin_bottom = 22.0
-text = "0 staged changes, 0 unstaged changes"
+text = "No changes, working tree clean."
 script = ExtResource( 3 )
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
