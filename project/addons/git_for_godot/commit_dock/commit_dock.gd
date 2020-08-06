@@ -7,5 +7,5 @@ func _ready():
 
 
 func _process(delta):
-	print(visible)
+	#print(visible)
 	pass
