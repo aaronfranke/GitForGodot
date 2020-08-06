@@ -1,0 +1,69 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/git_for_godot/theme.tres" type="Theme" id=1]
+
+[node name="Staging" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -724.0
+margin_bottom = -400.0
+rect_min_size = Vector2( 320, 200 )
+theme = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_min_size = Vector2( 100, 100 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="UnstagedStatus" type="Label" parent="VBoxContainer"]
+margin_right = 320.0
+margin_bottom = 22.0
+text = "0 unstaged files"
+
+[node name="UnstagedFiles" type="ColorRect" parent="VBoxContainer"]
+margin_top = 26.0
+margin_right = 320.0
+margin_bottom = 98.0
+size_flags_vertical = 3
+color = Color( 0.14902, 0.172549, 0.231373, 1 )
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/UnstagedFiles"]
+margin_top = 4.0
+margin_right = 320.0
+margin_bottom = 74.0
+scroll_horizontal_enabled = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/UnstagedFiles/ScrollContainer"]
+
+[node name="StagedStatus" type="Label" parent="VBoxContainer"]
+margin_top = 102.0
+margin_right = 320.0
+margin_bottom = 124.0
+text = "0 staged files"
+
+[node name="StagedFiles" type="ColorRect" parent="VBoxContainer"]
+margin_top = 128.0
+margin_right = 320.0
+margin_bottom = 200.0
+size_flags_vertical = 3
+color = Color( 0.14902, 0.172549, 0.231373, 1 )
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/StagedFiles"]
+margin_top = 4.0
+margin_right = 320.0
+margin_bottom = 74.0
+scroll_horizontal_enabled = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/StagedFiles/ScrollContainer"]

@@ -4,7 +4,7 @@
 [ext_resource path="res://addons/git_for_godot/history_main_screen/branch.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/git_for_godot/theme.tres" type="Theme" id=3]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/history_main_screen.gd" type="Script" id=4]
-[ext_resource path="res://commit_name.tscn" type="PackedScene" id=5]
+[ext_resource path="res://addons/git_for_godot/history_main_screen/commit_name.tscn" type="PackedScene" id=5]
 
 [node name="HistoryMainScreen" type="MarginContainer"]
 anchor_right = 1.0
