@@ -7,12 +7,12 @@ reloadable=true
 
 [entry]
 
-X11.64="res://addons/git_for_godot/gdnative/linuxbsd/libsimple.so"
-Windows.64="res://addons/git_for_godot/gdnative/windows/libsimple.dll"
 OSX.64="res://addons/git_for_godot/gdnative/macos/libsimple.dylib"
+Windows.64="res://addons/git_for_godot/gdnative/windows/libsimple.dll"
+X11.64="res://addons/git_for_godot/gdnative/linuxbsd/libsimple.so"
 
 [dependencies]
 
-X11.64=[  ]
-Windows=[  ]
 OSX.64=[  ]
+Windows.64=[  ]
+X11.64=[  ]

@@ -6,10 +6,12 @@ opts = Variables([], ARGUMENTS)
 # Gets the standard flags CC, CCX, etc.
 env = DefaultEnvironment()
 
+env["STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME"] = 1
+
 # Define our options
 opts.Add(EnumVariable("target", "Compilation target", "debug", ["d", "debug", "r", "release"]))
 opts.Add(EnumVariable("platform", "Compilation platform", "", ["", "windows", "linuxbsd", "macos"]))
-opts.Add(EnumVariable("p", "Compilation target, alias for 'platform'", "", ["", "windows", "linuxbsd", "macos"]))
+opts.Add(EnumVariable("p", "Compilation target, alias for platform", "", ["", "windows", "linuxbsd", "macos"]))
 opts.Add(BoolVariable("use_llvm", "Use the LLVM / Clang compiler", "no"))
 opts.Add(PathVariable("target_path", "The path where the lib is installed.", "project/addons/git_for_godot/gdnative/"))
 opts.Add(PathVariable("target_name", "The library name.", "libsimple", PathVariable.PathAccept))
@@ -70,6 +72,11 @@ env.Append(CPPPATH=[".", godot_headers_path])
 # tweak this if you want to use different folders, or more folders, to store your source code in.
 env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.c")
+
+env.Append(LINKFLAGS=[
+    "-Wl,-rpath,addons/git_for_godot/gdnative/linuxbsd"
+])
+env.Append(LIBS=["git2"])
 
 library = env.SharedLibrary(target=env["target_path"] + env["target_name"] , source=sources)
 

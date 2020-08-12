@@ -1,5 +1,5 @@
 #include <gdnative_api_struct.gen.h>
-//#include <libgit2/include/git2.h>
+#include <libgit2/include/git2.h>
 #include <string.h>
 
 typedef struct user_data_struct {
@@ -54,11 +54,10 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 GDCALLINGCONV void *simple_constructor(godot_object *p_instance, void *p_method_data) {
 	user_data_struct *user_data = api->godot_alloc(sizeof(user_data_struct));
 	int *major, *minor, *patch;
-	/*if (git_libgit2_version(major, minor, patch)) {
-		user_data->major = *major;
-		user_data->minor = *minor;
-		user_data->patch = *patch;
-	}*/
+	major = &user_data->major;
+	minor = &user_data->minor;
+	patch = &user_data->patch;
+	git_libgit2_version(major, minor, patch);
 	strcpy(user_data->data, "World from GDNative!");
 
 	return user_data;
@@ -70,14 +69,16 @@ GDCALLINGCONV void simple_destructor(godot_object *p_instance, void *p_method_da
 
 godot_variant simple_get_data(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
 	godot_string data;
+	godot_int libgit2_version_int;
 	godot_variant ret;
 	user_data_struct *user_data = (user_data_struct *) p_user_data;
 
-	api->godot_string_new(&data);
-	api->godot_string_parse_utf8(&data, user_data->data);
-	api->godot_variant_new_string(&ret, &data);
-	api->godot_string_destroy(&data);
-	//api->godot_variant_new_int(&ret, 100*(user_data->major) + 10*(user_data->minor) + user_data->patch);
+	//api->godot_string_new(&data);
+	//api->godot_string_parse_utf8(&data, user_data->data);
+	//api->godot_variant_new_string(&ret, &data);
+	//api->godot_string_destroy(&data);
+	libgit2_version_int = 100*(user_data->major) + 10*(user_data->minor) + user_data->patch;
+	api->godot_variant_new_int(&ret, libgit2_version_int);
 
 	return ret;
 }
