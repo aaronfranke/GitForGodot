@@ -2,19 +2,24 @@ tool
 extends EditorPlugin
 
 
+const SimpleNative = preload("res://addons/git_for_godot/gdnative/simple.gdns")
 const MainScreen = preload("res://addons/git_for_godot/history_main_screen/history_main_screen.tscn")
 const CommitDock = preload("res://addons/git_for_godot/commit_dock/commit_dock.tscn")
 const StagingDock = preload("res://addons/git_for_godot/staging_dock/staging_dock.tscn")
 
+var simple_native
 var main_screen_instance
 var commit_dock_instance
 var staging_dock_instance
 
 
 func _enter_tree():
+	simple_native = SimpleNative.new()
 	main_screen_instance = MainScreen.instance()
 	commit_dock_instance = CommitDock.instance()
 	staging_dock_instance = StagingDock.instance()
+
+	commit_dock_instance.simple_native = simple_native
 	# Add the main panel to the editor's main viewport.
 	get_editor_interface().get_editor_viewport().add_child(main_screen_instance)
 	# Hide the main panel. Very much required.

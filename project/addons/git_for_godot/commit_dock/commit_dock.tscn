@@ -30,24 +30,24 @@ margin_bottom = 22.0
 text = "No changes, working tree clean."
 script = ExtResource( 3 )
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+[node name="StageManagement" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 26.0
 margin_right = 320.0
 margin_bottom = 56.0
 rect_min_size = Vector2( 0, 30 )
 
-[node name="Stage" type="Button" parent="VBoxContainer/HBoxContainer2"]
+[node name="Stage" type="Button" parent="VBoxContainer/StageManagement"]
 margin_right = 67.0
 margin_bottom = 30.0
 text = "Stage All"
 
-[node name="Unstage" type="Button" parent="VBoxContainer/HBoxContainer2"]
+[node name="Unstage" type="Button" parent="VBoxContainer/StageManagement"]
 margin_left = 71.0
 margin_right = 156.0
 margin_bottom = 30.0
 text = "Unstage All"
 
-[node name="Discard" type="Button" parent="VBoxContainer/HBoxContainer2"]
+[node name="Discard" type="Button" parent="VBoxContainer/StageManagement"]
 margin_left = 160.0
 margin_right = 284.0
 margin_bottom = 30.0
@@ -83,3 +83,6 @@ margin_left = 187.0
 margin_right = 320.0
 margin_bottom = 30.0
 text = "Amend Previous"
+[connection signal="pressed" from="VBoxContainer/StageManagement/Stage" to="." method="_on_Stage_pressed"]
+[connection signal="pressed" from="VBoxContainer/StageManagement/Unstage" to="." method="_on_Unstage_pressed"]
+[connection signal="pressed" from="VBoxContainer/StageManagement/Discard" to="." method="_on_Discard_pressed"]

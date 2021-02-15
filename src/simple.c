@@ -10,6 +10,13 @@ typedef struct user_data_struct {
 
 git_repository *repo = NULL;
 
+void validate_git_repo_is_initialized() {
+	if (repo == NULL) {
+		git_libgit2_init();
+		git_repository_open(&repo, "/home/aaronfranke/workspace/GitForGodot/.git");
+	}
+}
+
 void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 	godot_instance_create_func create = { NULL, NULL, NULL };
 	create.create_func = &simple_constructor;
@@ -25,10 +32,18 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 	godot_instance_method get_status = { NULL, NULL, NULL };
 	get_status.method = &simple_get_status;
 
+	godot_instance_method get_stage_all = { NULL, NULL, NULL };
+	get_stage_all.method = &simple_stage_all;
+
+	godot_instance_method get_unstage_all = { NULL, NULL, NULL };
+	get_unstage_all.method = &simple_unstage_all;
+
 	godot_method_attributes attributes = { GODOT_METHOD_RPC_MODE_DISABLED };
 
 	nativescript_api->godot_nativescript_register_method(p_handle, "SIMPLE", "get_data", attributes, get_data);
 	nativescript_api->godot_nativescript_register_method(p_handle, "SIMPLE", "get_status", attributes, get_status);
+	nativescript_api->godot_nativescript_register_method(p_handle, "SIMPLE", "stage_all", attributes, get_stage_all);
+	nativescript_api->godot_nativescript_register_method(p_handle, "SIMPLE", "unstage_all", attributes, get_unstage_all);
 }
 
 GDCALLINGCONV void *simple_constructor(godot_object *p_instance, void *p_method_data) {
@@ -39,8 +54,7 @@ GDCALLINGCONV void *simple_constructor(godot_object *p_instance, void *p_method_
 	patch = &user_data->patch;
 	git_libgit2_version(major, minor, patch);
 	strcpy(user_data->data, "World from GDNative!");
-	git_libgit2_init();
-	git_repository_open(&repo, "/home/aaronfranke/workspace/GitForGodot/.git");
+	validate_git_repo_is_initialized();
 
 	return user_data;
 }
@@ -84,4 +98,34 @@ godot_variant simple_get_status(godot_object *p_instance, void *p_method_data, v
 	}
 	api->godot_variant_new_int(&ret, ecount);
 	return ret;
+}
+
+godot_variant simple_stage_all(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
+	validate_git_repo_is_initialized();
+	// Get the index of the repository.
+	git_index *index;
+	git_repository_index(&index, repo);
+	// Glob pattern for all files.
+	git_strarray array = {0};
+	array.count = 1;
+	array.strings = calloc(1, sizeof(char *));
+	array.strings[0] = "*";
+	// Add all files to the staging area.
+	git_index_add_all(index, &array, 0, NULL, NULL);
+
+	// Write in-memory changes to disk and clean up.
+	git_index_write(index);
+	git_index_free(index);
+}
+
+godot_variant simple_unstage_all(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
+	print(stos("unstage all print"));
+	validate_git_repo_is_initialized();
+	// Get the index of the repository.
+	git_index *index;
+	git_repository_index(&index, repo);
+
+	// Write in-memory changes to disk and clean up.
+	git_index_write(index);
+	git_index_free(index);
 }
