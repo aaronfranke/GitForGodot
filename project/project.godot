@@ -23,6 +23,10 @@ config/icon="res://icon.png"
 
 enabled=PoolStringArray( "git_for_godot", "godot-plugin-refresher" )
 
+[network]
+
+limits/debugger_stdout/max_chars_per_second=1048576
+
 [rendering]
 
 quality/driver/driver_name="GLES2"
