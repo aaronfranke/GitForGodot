@@ -59,7 +59,7 @@ godot_variant simple_get_data(godot_object *p_instance, void *p_method_data, voi
 	//api->godot_string_parse_utf8(&data, user_data->data);
 	//api->godot_variant_new_string(&ret, &data);
 	//api->godot_string_destroy(&data);
-	libgit2_version_int = 100 * (user_data->major) + 10 * (user_data->minor) + user_data->patch;
+	libgit2_version_int = 10000 * (user_data->major) + 100 * (user_data->minor) + user_data->patch;
 	api->godot_variant_new_int(&ret, libgit2_version_int);
 
 	return ret;

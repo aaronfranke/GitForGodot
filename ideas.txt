@@ -1,0 +1,5 @@
+Stage,commit,push button, field for commit name but otherwise one button
+Stage,commit,branch,pull,rebase button, for easy rebasing
+Right-click unstaged file and ignore that file type
+Commit all files in a given folder. Setting for depth?
+
