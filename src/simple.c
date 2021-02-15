@@ -26,24 +26,21 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 
 	nativescript_api->godot_nativescript_register_class(p_handle, "SIMPLE", "Reference", create, destroy);
 
-	godot_instance_method get_data = { NULL, NULL, NULL };
-	get_data.method = &simple_get_data;
-
-	godot_instance_method get_status = { NULL, NULL, NULL };
-	get_status.method = &simple_get_status;
-
-	godot_instance_method get_stage_all = { NULL, NULL, NULL };
-	get_stage_all.method = &simple_stage_all;
-
-	godot_instance_method get_unstage_all = { NULL, NULL, NULL };
-	get_unstage_all.method = &simple_unstage_all;
-
 	godot_method_attributes attributes = { GODOT_METHOD_RPC_MODE_DISABLED };
 
-	nativescript_api->godot_nativescript_register_method(p_handle, "SIMPLE", "get_data", attributes, get_data);
-	nativescript_api->godot_nativescript_register_method(p_handle, "SIMPLE", "get_status", attributes, get_status);
-	nativescript_api->godot_nativescript_register_method(p_handle, "SIMPLE", "stage_all", attributes, get_stage_all);
-	nativescript_api->godot_nativescript_register_method(p_handle, "SIMPLE", "unstage_all", attributes, get_unstage_all);
+#define REGISTER_INSTANCE_METHOD(m_name) \
+	godot_instance_method m_name = { NULL, NULL, NULL }; \
+	m_name.method = &simple_##m_name; \
+	nativescript_api->godot_nativescript_register_method(p_handle, "SIMPLE", #m_name, attributes, m_name);
+
+	REGISTER_INSTANCE_METHOD(get_data);
+	REGISTER_INSTANCE_METHOD(get_status);
+	REGISTER_INSTANCE_METHOD(stage_all);
+	REGISTER_INSTANCE_METHOD(unstage_all);
+	REGISTER_INSTANCE_METHOD(discard_unstaged);
+	REGISTER_INSTANCE_METHOD(commit);
+
+#undef REGISTER_INSTANCE_METHOD
 }
 
 GDCALLINGCONV void *simple_constructor(godot_object *p_instance, void *p_method_data) {
@@ -124,6 +121,37 @@ godot_variant simple_unstage_all(godot_object *p_instance, void *p_method_data, 
 	// Get the index of the repository.
 	git_index *index;
 	git_repository_index(&index, repo);
+
+	// Write in-memory changes to disk and clean up.
+	git_index_write(index);
+	git_index_free(index);
+}
+
+godot_variant simple_discard_unstaged(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
+	print(stos("discard unstaged print"));
+	validate_git_repo_is_initialized();
+	// Get the index of the repository.
+	git_index *index;
+	git_repository_index(&index, repo);
+
+	// Write in-memory changes to disk and clean up.
+	git_index_write(index);
+	git_index_free(index);
+}
+
+godot_variant simple_commit(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
+	print(stos("commit print"));
+	validate_git_repo_is_initialized();
+	// Get the index of the repository.
+	git_index *index;
+	git_repository_index(&index, repo);
+	print(itos(p_num_args));
+	print(godot_variant_as_string(p_args[0]));
+	print(godot_variant_as_string(p_args[1]));
+	print(godot_variant_as_string(p_args[2]));
+	godot_bool amend = godot_variant_as_bool(p_args[0]);
+	godot_char_string name = vtocs(p_args[1]);
+	godot_char_string description = vtocs(p_args[2]);
 
 	// Write in-memory changes to disk and clean up.
 	git_index_write(index);

@@ -11,6 +11,13 @@ godot_string stos(const char *p_string) {
 	return s;
 }
 
+godot_char_string vtocs(godot_variant *p_variant) {
+	godot_string str = godot_variant_as_string(p_variant);
+	godot_char_string char_string = api->godot_string_utf8(&str);
+	godot_string_destroy(&str);
+	return char_string;
+}
+
 void print(godot_string p_string) {
 	godot_print(&p_string);
 }

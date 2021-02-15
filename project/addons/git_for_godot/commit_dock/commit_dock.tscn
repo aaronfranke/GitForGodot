@@ -37,30 +37,34 @@ margin_bottom = 56.0
 rect_min_size = Vector2( 0, 30 )
 
 [node name="Stage" type="Button" parent="VBoxContainer/StageManagement"]
-margin_right = 67.0
+margin_right = 94.0
 margin_bottom = 30.0
+size_flags_horizontal = 3
 text = "Stage All"
 
 [node name="Unstage" type="Button" parent="VBoxContainer/StageManagement"]
-margin_left = 71.0
-margin_right = 156.0
+margin_left = 98.0
+margin_right = 192.0
 margin_bottom = 30.0
+size_flags_horizontal = 3
 text = "Unstage All"
 
 [node name="Discard" type="Button" parent="VBoxContainer/StageManagement"]
-margin_left = 160.0
-margin_right = 284.0
+margin_left = 196.0
+margin_right = 320.0
 margin_bottom = 30.0
+size_flags_horizontal = 3
 text = "Discard Unstaged"
 
-[node name="LineEdit" type="LineEdit" parent="VBoxContainer"]
+[node name="CommitName" type="LineEdit" parent="VBoxContainer"]
 margin_top = 60.0
 margin_right = 320.0
 margin_bottom = 90.0
 rect_min_size = Vector2( 0, 30 )
+max_length = 70
 placeholder_text = "Commit name here"
 
-[node name="TextEdit" type="TextEdit" parent="VBoxContainer"]
+[node name="CommitDescription" type="TextEdit" parent="VBoxContainer"]
 margin_top = 94.0
 margin_right = 320.0
 margin_bottom = 166.0
@@ -72,17 +76,19 @@ margin_right = 320.0
 margin_bottom = 200.0
 rect_min_size = Vector2( 0, 30 )
 
-[node name="Button" type="Button" parent="VBoxContainer/CommitButtons"]
-margin_right = 183.0
+[node name="Commit" type="Button" parent="VBoxContainer/CommitButtons"]
+margin_right = 242.0
 margin_bottom = 30.0
 size_flags_horizontal = 3
 text = "Commit changes"
 
-[node name="CheckBox" type="CheckBox" parent="VBoxContainer/CommitButtons"]
-margin_left = 187.0
+[node name="Amend" type="CheckBox" parent="VBoxContainer/CommitButtons"]
+margin_left = 246.0
 margin_right = 320.0
 margin_bottom = 30.0
-text = "Amend Previous"
+text = "Amend"
 [connection signal="pressed" from="VBoxContainer/StageManagement/Stage" to="." method="_on_Stage_pressed"]
 [connection signal="pressed" from="VBoxContainer/StageManagement/Unstage" to="." method="_on_Unstage_pressed"]
 [connection signal="pressed" from="VBoxContainer/StageManagement/Discard" to="." method="_on_Discard_pressed"]
+[connection signal="pressed" from="VBoxContainer/CommitButtons/Commit" to="." method="_on_Commit_pressed"]
+[connection signal="pressed" from="VBoxContainer/CommitButtons/Amend" to="." method="_on_Amend_pressed"]

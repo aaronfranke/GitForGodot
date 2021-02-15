@@ -3,6 +3,8 @@
         "GDCALLINGCONV",
         "byindex",
         "gdnative",
-        "unstage"
+        "unstage",
+        "unstaged",
+        "vtocs"
     ]
 }
