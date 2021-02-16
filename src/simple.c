@@ -28,9 +28,9 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 
 	godot_method_attributes attributes = { GODOT_METHOD_RPC_MODE_DISABLED };
 
-#define REGISTER_INSTANCE_METHOD(m_name) \
+#define REGISTER_INSTANCE_METHOD(m_name)                 \
 	godot_instance_method m_name = { NULL, NULL, NULL }; \
-	m_name.method = &simple_##m_name; \
+	m_name.method = &simple_##m_name;                    \
 	nativescript_api->godot_nativescript_register_method(p_handle, "SIMPLE", #m_name, attributes, m_name);
 
 	REGISTER_INSTANCE_METHOD(get_data);
@@ -103,7 +103,7 @@ godot_variant simple_stage_all(godot_object *p_instance, void *p_method_data, vo
 	git_index *index;
 	git_repository_index(&index, repo);
 	// Glob pattern for all files.
-	git_strarray array = {0};
+	git_strarray array = { 0 };
 	array.count = 1;
 	array.strings = calloc(1, sizeof(char *));
 	array.strings[0] = "*";
