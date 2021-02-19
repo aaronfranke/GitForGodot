@@ -121,10 +121,19 @@ godot_variant simple_unstage_all(godot_object *p_instance, void *p_method_data, 
 	// Get the index of the repository.
 	git_index *index;
 	git_repository_index(&index, repo);
-
+	// Get information for the current HEAD of the repository.
+	git_oid head_oid;
+	git_reference_name_to_id(&head_oid, repo, "HEAD");
+	git_commit *head_commit;
+	git_commit_lookup(&head_commit, repo, &head_oid);
+	git_tree *head_tree;
+	git_commit_tree(&head_tree, head_commit);
+	git_index_read_tree(index, head_tree);
 	// Write in-memory changes to disk and clean up.
 	git_index_write(index);
 	git_index_free(index);
+	git_tree_free(head_tree);
+	git_commit_free(head_commit);
 }
 
 godot_variant simple_discard_unstaged(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
