@@ -1,16 +1,26 @@
 #include <gdnative_api_struct.gen.h>
 #include <string.h>
 
+// Int to string.
 godot_string itos(const int64_t p_value) {
 	return godot_string_num_int64(p_value, 10);
 }
 
-godot_string stos(const char *p_string) {
-	godot_string s = godot_string_num_int64(0, 1); // Hack to get a mostly empty string.
+// Char pointer to string.
+godot_string cptos(const char *p_string) {
+	godot_string s;
+	godot_string_new(&s);
 	godot_string_parse_utf8(&s, p_string);
 	return s;
 }
 
+// String to char string.
+godot_char_string stocs(godot_string *p_str) {
+	godot_char_string char_string = api->godot_string_utf8(p_str);
+	return char_string;
+}
+
+// Variant to char string.
 godot_char_string vtocs(godot_variant *p_variant) {
 	godot_string str = godot_variant_as_string(p_variant);
 	godot_char_string char_string = api->godot_string_utf8(&str);

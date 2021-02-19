@@ -86,10 +86,10 @@ godot_variant simple_get_status(godot_object *p_instance, void *p_method_data, v
 	for (int i = 0; i < ecount; ++i) {
 		const git_index_entry *e = git_index_get_byindex(index, i);
 
-		print2(stos("path: "), stos(e->path));
+		print2(cptos("path: "), cptos(e->path));
 		/*
-		print2(stos("mtime: "), itos((int)e->mtime.seconds));
-		print2(stos("fs: "), itos((int)e->file_size));
+		print2(cptos("mtime: "), itos((int)e->mtime.seconds));
+		print2(cptos("fs: "), itos((int)e->file_size));
 		*/
 		git_oid id = e->id;
 	}
@@ -116,7 +116,7 @@ godot_variant simple_stage_all(godot_object *p_instance, void *p_method_data, vo
 }
 
 godot_variant simple_unstage_all(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
-	print(stos("unstage all print"));
+	print(cptos("unstage all print"));
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
@@ -128,7 +128,7 @@ godot_variant simple_unstage_all(godot_object *p_instance, void *p_method_data, 
 }
 
 godot_variant simple_discard_unstaged(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
-	print(stos("discard unstaged print"));
+	print(cptos("discard unstaged print"));
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
@@ -140,20 +140,65 @@ godot_variant simple_discard_unstaged(godot_object *p_instance, void *p_method_d
 }
 
 godot_variant simple_commit(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
-	print(stos("commit print"));
+	print(cptos("commit print"));
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
 	git_repository_index(&index, repo);
 	print(itos(p_num_args));
-	print(godot_variant_as_string(p_args[0]));
-	print(godot_variant_as_string(p_args[1]));
-	print(godot_variant_as_string(p_args[2]));
+	//print(godot_variant_as_string(p_args[0]));
+	//print(godot_variant_as_string(p_args[1]));
+	//print(godot_variant_as_string(p_args[2]));
 	godot_bool amend = godot_variant_as_bool(p_args[0]);
-	godot_char_string name = vtocs(p_args[1]);
-	godot_char_string description = vtocs(p_args[2]);
-
-	// Write in-memory changes to disk and clean up.
-	git_index_write(index);
+	// Parse the commit message.
+	godot_string newline = cptos("\n");
+	godot_string name = godot_variant_as_string(p_args[1]);
+	godot_string desc = godot_variant_as_string(p_args[2]);
+	godot_string message_str = godot_string_operator_plus(&name, &newline);
+	message_str = godot_string_operator_plus(&message_str, &desc);
+	godot_char_string message_cs = stocs(&message_str);
+	const char *message = api->godot_char_string_get_data(&message_cs);
+	//print(cptos(message));
+	// Get information for the tree of the commit.
+	git_oid index_tree_oid;
+	git_index_write_tree(&index_tree_oid, index);
+	git_tree *index_tree;
+	git_tree_lookup(&index_tree, repo, &index_tree_oid);
+	// Get information for the current HEAD of the repository.
+	git_oid parent_oid;
+	git_reference_name_to_id(&parent_oid, repo, "HEAD");
+	git_commit *parent;
+	git_commit_lookup(&parent, repo, &parent_oid);
+	// Open Git config.
+	git_config *config;
+	git_repository_config_snapshot(&config, repo);
+	// Committer information.
+	const char *user_name;
+	if (git_config_get_string(&user_name, config, "user.name")) {
+		user_name = "Git User";
+	}
+	const char *user_email;
+	if (git_config_get_string(&user_email, config, "user.email")) {
+		user_email = "test@example.com";
+	}
+	git_signature *committer;
+	git_signature_new(&committer, user_name, user_email, 0, 0);
+	git_oid new_commit_oid;
+	// Create the commit.
+	if (amend) {
+		const git_signature *author = git_commit_author(parent);
+		git_commit_amend(&new_commit_oid, parent, "HEAD", author, committer, "UTF-8", message, index_tree);
+	} else {
+		git_signature *author = committer;
+		const git_commit **parents = (const git_commit **)&parent;
+		git_commit_create(&new_commit_oid, repo, "HEAD", author, committer, "UTF-8", message, index_tree, 1, parents);
+	}
+	// Clean up memory.
+	godot_char_string_destroy(&message_cs);
+	godot_string_destroy(&message_str);
+	godot_string_destroy(&newline);
+	git_signature_free(committer);
+	git_tree_free(index_tree);
+	git_commit_free(parent);
 	git_index_free(index);
 }
