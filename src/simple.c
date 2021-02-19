@@ -190,8 +190,14 @@ godot_variant simple_commit(godot_object *p_instance, void *p_method_data, void 
 	if (git_config_get_string(&user_email, config, "user.email")) {
 		user_email = "test@example.com";
 	}
+	// Get the time.
+	godot_object *os_singleton = godot_global_get_singleton("OS");
+	godot_method_bind *os_get_unix_time = api->godot_method_bind_get_method("_OS", "get_unix_time");
+	int64_t unix_time;
+	api->godot_method_bind_ptrcall(os_get_unix_time, os_singleton, NULL, &unix_time);
+	// Set up the signature.
 	git_signature *committer;
-	git_signature_new(&committer, user_name, user_email, 0, 0);
+	git_signature_new(&committer, user_name, user_email, unix_time, 0);
 	git_oid new_commit_oid;
 	// Create the commit.
 	if (amend) {
