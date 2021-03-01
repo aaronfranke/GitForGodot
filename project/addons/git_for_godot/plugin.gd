@@ -14,12 +14,17 @@ var staging_dock_instance
 
 
 func _enter_tree():
+	# Create objects and scenes.
 	simple_native = SimpleNative.new()
 	main_screen_instance = MainScreen.instance()
 	commit_dock_instance = CommitDock.instance()
 	staging_dock_instance = StagingDock.instance()
 
+	# Set scene variables.
 	commit_dock_instance.simple_native = simple_native
+	staging_dock_instance.simple_native = simple_native
+	commit_dock_instance.staging_dock = staging_dock_instance
+	staging_dock_instance.commit_dock = commit_dock_instance
 	# Add the main panel to the editor's main viewport.
 	get_editor_interface().get_editor_viewport().add_child(main_screen_instance)
 	# Hide the main panel. Very much required.

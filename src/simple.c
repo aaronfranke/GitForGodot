@@ -77,24 +77,42 @@ godot_variant simple_get_data(godot_object *p_instance, void *p_method_data, voi
 }
 
 godot_variant simple_get_status(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
-	git_status_list *status_list;
-	godot_variant ret;
-	int err = git_status_list_new(&status_list, repo, NULL);
+	validate_git_repo_is_initialized();
+	// Get the index of the repository.
 	git_index *index;
 	git_repository_index(&index, repo);
-	int ecount = git_index_entrycount(index);
-	for (int i = 0; i < ecount; ++i) {
-		const git_index_entry *e = git_index_get_byindex(index, i);
-
-		print2(cptos("path: "), cptos(e->path));
-		/*
-		print2(cptos("mtime: "), itos((int)e->mtime.seconds));
-		print2(cptos("fs: "), itos((int)e->file_size));
-		*/
-		git_oid id = e->id;
+	git_status_list *status_list;
+	int64_t err = git_status_list_new(&status_list, repo, NULL);
+	if (err) {
+		//return;
 	}
-	api->godot_variant_new_int(&ret, ecount);
-	return ret;
+	int64_t status = (int64_t)git_status_list_entrycount(status_list);
+	godot_dictionary all_changes;
+	godot_dictionary_new(&all_changes);
+	for (int i = 0; i < status; i++) {
+		const git_status_entry *status_entry = git_status_byindex(status_list, i);
+		if (status_entry->status & (GIT_STATUS_INDEX_CHANGES | GIT_STATUS_WT_CHANGES)) {
+			godot_variant status;
+			godot_variant_new_int(&status, status_entry->status);
+			godot_string path_string;
+			if (status_entry->status & GIT_STATUS_INDEX_CHANGES) {
+				path_string = cptos(status_entry->head_to_index->new_file.path);
+			} else { // status_entry->status & GIT_STATUS_WT_CHANGES
+				path_string = cptos(status_entry->index_to_workdir->new_file.path);
+			}
+			godot_variant path_variant;
+			godot_variant_new_string(&path_variant, &path_string);
+			godot_dictionary_set(&all_changes, &path_variant, &status);
+			// Clean up.
+			godot_string_destroy(&path_string);
+			godot_variant_destroy(&path_variant);
+			godot_variant_destroy(&status);
+		}
+	}
+	godot_variant all_changes_variant;
+	godot_variant_new_dictionary(&all_changes_variant, &all_changes);
+	godot_dictionary_destroy(&all_changes);
+	return all_changes_variant;
 }
 
 godot_variant simple_stage_all(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
