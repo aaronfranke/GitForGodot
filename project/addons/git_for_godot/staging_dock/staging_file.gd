@@ -1,7 +1,12 @@
 tool
 extends Control
 
+var simple_native
+var _name
+
+
 func setup(name, status):
+	_name = name
 	$Label.text = name
 
 	if status & LibGit2Defines.GIT_STATUS_ANY_NEW:
@@ -17,3 +22,7 @@ func setup(name, status):
 		$Button.text = "Unstage"
 	elif status & LibGit2Defines.GIT_STATUS_WT_CHANGES:
 		$Button.text = "Stage"
+
+
+func _on_Button_pressed():
+	simple_native.stage_one(_name)

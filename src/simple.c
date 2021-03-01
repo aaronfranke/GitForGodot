@@ -35,6 +35,7 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 
 	REGISTER_INSTANCE_METHOD(get_data);
 	REGISTER_INSTANCE_METHOD(get_status);
+	REGISTER_INSTANCE_METHOD(stage_one);
 	REGISTER_INSTANCE_METHOD(stage_all);
 	REGISTER_INSTANCE_METHOD(unstage_all);
 	REGISTER_INSTANCE_METHOD(discard_unstaged);
@@ -113,6 +114,31 @@ godot_variant simple_get_status(godot_object *p_instance, void *p_method_data, v
 	godot_variant_new_dictionary(&all_changes_variant, &all_changes);
 	godot_dictionary_destroy(&all_changes);
 	return all_changes_variant;
+}
+
+godot_variant simple_stage_one(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
+	validate_git_repo_is_initialized();
+	// Get the index of the repository.
+	git_index *index;
+	git_repository_index(&index, repo);
+	// Get file path argument.
+	godot_variant *arg = p_args[0];
+	godot_string path_string = godot_variant_as_string(arg);
+	godot_char_string path_char_string = stocs(&path_string);
+	const char *path_charptr = godot_char_string_get_data(&path_char_string);
+	// Glob pattern for this file path.
+	git_strarray array = { 0 };
+	array.count = 1;
+	array.strings = calloc(1, sizeof(char *));
+	array.strings[0] = (char *)path_charptr;
+	// Add all files to the staging area.
+	git_index_add_all(index, &array, 0, NULL, NULL);
+
+	// Write in-memory changes to disk and clean up.
+	git_index_write(index);
+	git_index_free(index);
+	godot_string_destroy(&path_string);
+	godot_variant_destroy(arg);
 }
 
 godot_variant simple_stage_all(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {

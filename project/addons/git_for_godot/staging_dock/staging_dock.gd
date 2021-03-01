@@ -44,6 +44,7 @@ func update_status():
 		if value & LibGit2Defines.GIT_STATUS_WT_CHANGES:
 			unstaged_file_count += 1
 			var staging_file_instance = staging_file_scene.instance()
+			staging_file_instance.simple_native = simple_native
 			staging_file_instance.setup(key, value & LibGit2Defines.GIT_STATUS_WT_CHANGES)
 			unstaged_files_vbox.add_child(staging_file_instance)
 
