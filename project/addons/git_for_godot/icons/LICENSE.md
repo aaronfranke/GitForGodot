@@ -1,5 +1,7 @@
-"Add.svg", "Delete.svg", "Modify.svg", and "Rename.svg" are
-derived from various files in Godot Engine, which is under the MIT license.
+"Add.svg", "Delete.svg", "Modify.svg", "Rename.svg", "MenuIdle.svg",
+"MenuHover.svg", "Check.svg", "CheckHover.svg", "NoCheck.svg",
+and "NoCheckHover.svg"
+are derived from various files in Godot Engine, which is under the MIT license.
 
 Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur. \
 Copyright (c) 2014-2021 Godot Engine contributors.

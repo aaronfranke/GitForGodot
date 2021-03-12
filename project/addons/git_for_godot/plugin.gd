@@ -4,11 +4,13 @@ extends EditorPlugin
 
 const SimpleNative = preload("res://addons/git_for_godot/gdnative/simple.gdns")
 const MainScreen = preload("res://addons/git_for_godot/history_main_screen/history_main_screen.tscn")
+const BranchDock = preload("res://addons/git_for_godot/branch_dock/branch_dock.tscn")
 const CommitDock = preload("res://addons/git_for_godot/commit_dock/commit_dock.tscn")
 const StagingDock = preload("res://addons/git_for_godot/staging_dock/staging_dock.tscn")
 
 var simple_native
 var main_screen_instance
+var branch_dock_instance
 var commit_dock_instance
 var staging_dock_instance
 
@@ -17,10 +19,12 @@ func _enter_tree():
 	# Create objects and scenes.
 	simple_native = SimpleNative.new()
 	main_screen_instance = MainScreen.instance()
+	branch_dock_instance = BranchDock.instance()
 	commit_dock_instance = CommitDock.instance()
 	staging_dock_instance = StagingDock.instance()
 
 	# Set scene variables.
+	branch_dock_instance.simple_native = simple_native
 	commit_dock_instance.simple_native = simple_native
 	staging_dock_instance.simple_native = simple_native
 	commit_dock_instance.staging_dock = staging_dock_instance
@@ -45,10 +49,12 @@ func has_main_screen():
 
 func make_visible(visible):
 	if visible:
+		add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_UR, branch_dock_instance)
 		add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_BL, commit_dock_instance)
 		add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_UL, staging_dock_instance)
 		hide_bottom_panel()
 	else:
+		remove_control_from_docks(branch_dock_instance)
 		remove_control_from_docks(commit_dock_instance)
 		remove_control_from_docks(staging_dock_instance)
 	if main_screen_instance:

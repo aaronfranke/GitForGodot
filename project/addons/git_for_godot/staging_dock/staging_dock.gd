@@ -1,5 +1,5 @@
 tool
-extends Node
+extends Control
 
 const AUTO_REFRESH_DELAY = 0.5
 const staging_file_scene = preload("res://addons/git_for_godot/staging_dock/staging_file.tscn")
@@ -18,7 +18,8 @@ func _process(delta):
 	auto_refresh_time -= delta
 	if auto_refresh_time < 0.0:
 		auto_refresh_time += AUTO_REFRESH_DELAY
-		update_status()
+		if visible or commit_dock.visible:
+			update_status()
 
 
 func update_status():
@@ -48,7 +49,7 @@ func update_status():
 			staging_file_instance.setup(key, value & LibGit2Defines.GIT_STATUS_WT_CHANGES)
 			unstaged_files_vbox.add_child(staging_file_instance)
 
-	staged_file_count_label.text = str(staged_file_count) + " staged files"
-	unstaged_file_count_label.text = str(unstaged_file_count) + " unstaged files"
+	staged_file_count_label.text = str(staged_file_count) + " staged file" + ("" if staged_file_count == 1 else "s")
+	unstaged_file_count_label.text = str(unstaged_file_count) + " unstaged file" + ("" if unstaged_file_count == 1 else "s")
 	var commit_dock_status_label = commit_dock.get_child(0).get_node("StageStatus")
 	commit_dock_status_label.set_staged_and_unstaged_file_counts(staged_file_count, unstaged_file_count)

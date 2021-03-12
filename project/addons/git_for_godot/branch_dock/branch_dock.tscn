@@ -1,0 +1,57 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://addons/git_for_godot/theme.tres" type="Theme" id=1]
+[ext_resource path="res://addons/git_for_godot/branch_dock/branch_item.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/git_for_godot/branch_dock/branch_dock.gd" type="Script" id=4]
+
+[node name="Branch" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -824.0
+margin_bottom = -400.0
+rect_min_size = Vector2( 200, 200 )
+theme = ExtResource( 1 )
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+margin_right = 200.0
+margin_bottom = 148.0
+size_flags_vertical = 3
+
+[node name="BranchList" type="VBoxContainer" parent="ScrollContainer"]
+margin_right = 200.0
+margin_bottom = 148.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="BranchItem" parent="ScrollContainer/BranchList" instance=ExtResource( 2 )]
+
+[node name="NewBranch" type="VBoxContainer" parent="."]
+margin_top = 152.0
+margin_right = 200.0
+margin_bottom = 200.0
+
+[node name="Name" type="HBoxContainer" parent="NewBranch"]
+margin_right = 200.0
+margin_bottom = 22.0
+
+[node name="Label" type="Label" parent="NewBranch/Name"]
+margin_right = 87.0
+margin_bottom = 22.0
+text = "New branch:"
+
+[node name="LineEdit" type="LineEdit" parent="NewBranch/Name"]
+margin_left = 91.0
+margin_right = 200.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="NewBranch"]
+margin_top = 26.0
+margin_right = 200.0
+margin_bottom = 48.0
+size_flags_horizontal = 3
+text = "Create branch"
