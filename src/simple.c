@@ -40,6 +40,7 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 	REGISTER_INSTANCE_METHOD(unstage_all);
 	REGISTER_INSTANCE_METHOD(discard_unstaged);
 	REGISTER_INSTANCE_METHOD(commit);
+	REGISTER_INSTANCE_METHOD(get_head_message);
 
 #undef REGISTER_INSTANCE_METHOD
 }
@@ -61,7 +62,7 @@ GDCALLINGCONV void simple_destructor(godot_object *p_instance, void *p_method_da
 	api->godot_free(p_user_data);
 }
 
-godot_variant simple_get_data(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
+INSTANCE_METHOD(get_data) {
 	godot_string data;
 	godot_int libgit2_version_int;
 	godot_variant ret;
@@ -77,7 +78,7 @@ godot_variant simple_get_data(godot_object *p_instance, void *p_method_data, voi
 	return ret;
 }
 
-godot_variant simple_get_status(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
+INSTANCE_METHOD(get_status) {
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
@@ -116,7 +117,7 @@ godot_variant simple_get_status(godot_object *p_instance, void *p_method_data, v
 	return all_changes_variant;
 }
 
-godot_variant simple_stage_one(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
+INSTANCE_METHOD(stage_one) {
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
@@ -141,7 +142,7 @@ godot_variant simple_stage_one(godot_object *p_instance, void *p_method_data, vo
 	godot_variant_destroy(arg);
 }
 
-godot_variant simple_stage_all(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
+INSTANCE_METHOD(stage_all) {
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
@@ -159,7 +160,7 @@ godot_variant simple_stage_all(godot_object *p_instance, void *p_method_data, vo
 	git_index_free(index);
 }
 
-godot_variant simple_unstage_all(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
+INSTANCE_METHOD(unstage_all) {
 	print(cptos("unstage all print"));
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
@@ -180,7 +181,7 @@ godot_variant simple_unstage_all(godot_object *p_instance, void *p_method_data, 
 	git_commit_free(head_commit);
 }
 
-godot_variant simple_discard_unstaged(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
+INSTANCE_METHOD(discard_unstaged) {
 	print(cptos("discard unstaged print"));
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
@@ -192,7 +193,7 @@ godot_variant simple_discard_unstaged(godot_object *p_instance, void *p_method_d
 	git_index_free(index);
 }
 
-godot_variant simple_commit(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args) {
+INSTANCE_METHOD(commit) {
 	print(cptos("commit print"));
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
@@ -260,4 +261,51 @@ godot_variant simple_commit(godot_object *p_instance, void *p_method_data, void 
 	git_tree_free(index_tree);
 	git_commit_free(parent);
 	git_index_free(index);
+}
+
+INSTANCE_METHOD(get_head_message) {
+	validate_git_repo_is_initialized();
+	// Get the index of the repository.
+	git_index *index;
+	git_repository_index(&index, repo);
+	// Get information for the tree of the commit.
+	git_oid index_tree_oid;
+	git_index_write_tree(&index_tree_oid, index);
+	git_tree *index_tree;
+	git_tree_lookup(&index_tree, repo, &index_tree_oid);
+	// Get information for the current HEAD of the repository.
+	git_oid head_oid;
+	git_reference_name_to_id(&head_oid, repo, "HEAD");
+	git_commit *head;
+	git_commit_lookup(&head, repo, &head_oid);
+	// Get the summary and body and store them in variants.
+	godot_variant summary_variant;
+	{
+		const char *summary_charpointer = git_commit_summary(head);
+		godot_string summary_str = cptos(summary_charpointer);
+		godot_variant_new_string(&summary_variant, &summary_str);
+		godot_string_destroy(&summary_str);
+	}
+	godot_variant body_variant;
+	{
+		const char *body_charpointer = git_commit_body(head);
+		godot_string body_str = cptos(body_charpointer);
+		godot_variant_new_string(&body_variant, &body_str);
+		godot_string_destroy(&body_str);
+	}
+	// Create an array of the message to return and convert to a variant.
+	godot_array message_array;
+	godot_array_new(&message_array);
+	godot_array_push_back(&message_array, &summary_variant);
+	godot_array_push_back(&message_array, &body_variant);
+	godot_variant ret;
+	godot_variant_new_array(&ret, &message_array);
+	// Clean up memory.
+	godot_variant_destroy(&summary_variant);
+	godot_variant_destroy(&body_variant);
+	godot_array_destroy(&message_array);
+	git_tree_free(index_tree);
+	git_commit_free(head);
+	git_index_free(index);
+	return ret;
 }

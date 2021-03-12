@@ -3,7 +3,6 @@ extends Control
 
 var simple_native
 var staging_dock
-var _amend = false
 
 onready var commit_name = $VBoxContainer/CommitName
 onready var commit_description = $VBoxContainer/CommitDescription
@@ -27,13 +26,19 @@ func _on_Discard_pressed():
 
 
 func _on_Commit_pressed():
-	simple_native.commit(_amend, commit_name.text, commit_description.text)
+	simple_native.commit(amend_button.pressed, commit_name.text, commit_description.text)
+	amend_button.pressed = false
+	_on_Amend_pressed()
 	staging_dock.update_status()
 
 
 func _on_Amend_pressed():
-	_amend = amend_button.pressed
-	if _amend:
+	if amend_button.pressed:
+		var message = simple_native.get_head_message()
+		commit_name.text = message[0]
+		commit_description.text = message[1]
 		commit_button.text = "Amend previous commit"
 	else:
+		commit_name.text = ""
+		commit_description.text = ""
 		commit_button.text = "Commit changes"
