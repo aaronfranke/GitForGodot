@@ -41,6 +41,8 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 	REGISTER_INSTANCE_METHOD(discard_unstaged);
 	REGISTER_INSTANCE_METHOD(commit);
 	REGISTER_INSTANCE_METHOD(get_head_message);
+	REGISTER_INSTANCE_METHOD(get_branch_list);
+	REGISTER_INSTANCE_METHOD(checkout_branch);
 
 #undef REGISTER_INSTANCE_METHOD
 }
@@ -184,13 +186,10 @@ INSTANCE_METHOD(unstage_all) {
 INSTANCE_METHOD(discard_unstaged) {
 	print(cptos("discard unstaged print"));
 	validate_git_repo_is_initialized();
-	// Get the index of the repository.
-	git_index *index;
-	git_repository_index(&index, repo);
-
-	// Write in-memory changes to disk and clean up.
-	git_index_write(index);
-	git_index_free(index);
+	// Force-checkout from the index to discard unstaged changes.
+	git_checkout_options opt = GIT_CHECKOUT_OPTIONS_INIT;
+	opt.checkout_strategy = GIT_CHECKOUT_FORCE;
+	git_checkout_index(repo, NULL, &opt);
 }
 
 INSTANCE_METHOD(commit) {
@@ -308,4 +307,73 @@ INSTANCE_METHOD(get_head_message) {
 	git_commit_free(head);
 	git_index_free(index);
 	return ret;
+}
+
+INSTANCE_METHOD(get_branch_list) {
+	validate_git_repo_is_initialized();
+	// Get the index of the repository.
+	git_index *index;
+	git_repository_index(&index, repo);
+	// Create a dictionary to later return as a variant.
+	godot_dictionary branch_dict;
+	godot_dictionary_new(&branch_dict);
+	{
+		git_branch_iterator *iterator;
+		git_branch_iterator_new(&iterator, repo, GIT_BRANCH_ALL);
+		git_reference *out_branch_ref;
+		git_branch_t out_branch_type;
+		while (!git_branch_next(&out_branch_ref, &out_branch_type, iterator)) {
+			// Branch type as variant.
+			if (git_branch_is_head(out_branch_ref) == 1) {
+				// TODO: git_branch_is_head vs git_branch_is_checked_out?
+				out_branch_type |= 4; // GitBranch.HEAD
+			}
+			godot_variant branch_type_variant;
+			godot_variant_new_int(&branch_type_variant, out_branch_type);
+			// Branch name as variant.
+			const char *branch_name_cp;
+			git_branch_name(&branch_name_cp, out_branch_ref);
+			godot_string branch_name_str = cptos(branch_name_cp);
+			godot_variant branch_name_variant;
+			godot_variant_new_string(&branch_name_variant, &branch_name_str);
+			// Set the dictionary entry.
+			godot_dictionary_set(&branch_dict, &branch_name_variant, &branch_type_variant);
+			// Clean up.
+			godot_string_destroy(&branch_name_str);
+			godot_variant_destroy(&branch_name_variant);
+			godot_variant_destroy(&branch_type_variant);
+		}
+		git_branch_iterator_free(iterator);
+	}
+	godot_variant ret;
+	godot_variant_new_dictionary(&ret, &branch_dict);
+	// Clean up memory.
+	godot_dictionary_destroy(&branch_dict);
+	git_index_free(index);
+	return ret;
+}
+
+INSTANCE_METHOD(checkout_branch) {
+	validate_git_repo_is_initialized();
+	// Get the index of the repository.
+	git_index *index;
+	git_repository_index(&index, repo);
+	// Parse the branch name.
+	godot_string prefix = cptos("refs/heads/");
+	godot_string branch_name_str = godot_variant_as_string(p_args[0]);
+	godot_string branch_ref_str = godot_string_operator_plus(&prefix, &branch_name_str);
+	godot_char_string branch_ref_cs = stocs(&branch_ref_str);
+	const char *branch_ref_cp = godot_char_string_get_data(&branch_ref_cs);
+	print(prefix);
+	print(branch_name_str);
+	print(branch_ref_str);
+	// Switch branches.
+	git_object *treeish;
+	git_repository_set_head(repo, branch_ref_cp);
+	git_checkout_options opt = GIT_CHECKOUT_OPTIONS_INIT;
+	opt.baseline_index = index;
+	git_checkout_head(repo, &opt);
+	// Write in-memory changes to disk and clean up.
+	git_index_write(index);
+	git_index_free(index);
 }

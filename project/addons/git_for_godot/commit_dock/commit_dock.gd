@@ -33,6 +33,7 @@ func _on_Commit_pressed():
 
 
 func _on_Amend_pressed():
+	simple_native.get_branch_list()
 	if amend_button.pressed:
 		var message = simple_native.get_head_message()
 		commit_name.text = message[0]

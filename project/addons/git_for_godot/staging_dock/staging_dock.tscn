@@ -29,12 +29,11 @@ margin_bottom = 22.0
 text = "0 unstaged files"
 clip_text = true
 
-[node name="UnstagedFiles" type="ColorRect" parent="VBoxContainer"]
+[node name="UnstagedFiles" type="Panel" parent="VBoxContainer"]
 margin_top = 26.0
 margin_right = 320.0
 margin_bottom = 98.0
 size_flags_vertical = 3
-color = Color( 0.14902, 0.172549, 0.231373, 1 )
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/UnstagedFiles"]
 anchor_right = 1.0
@@ -57,12 +56,11 @@ margin_bottom = 124.0
 text = "0 staged files"
 clip_text = true
 
-[node name="StagedFiles" type="ColorRect" parent="VBoxContainer"]
+[node name="StagedFiles" type="Panel" parent="VBoxContainer"]
 margin_top = 128.0
 margin_right = 320.0
 margin_bottom = 200.0
 size_flags_vertical = 3
-color = Color( 0.14902, 0.172549, 0.231373, 1 )
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/StagedFiles"]
 anchor_right = 1.0

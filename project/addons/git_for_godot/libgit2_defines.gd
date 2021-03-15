@@ -2,6 +2,13 @@ tool
 class_name LibGit2Defines
 # This file implements some of the constants and enums defined in LibGit2.
 
+enum GitBranch {
+	LOCAL = 1,
+	REMOTE = 2,
+	ANY = 3,
+	HEAD = 4,
+}
+
 enum GitDelta {
 	UNMODIFIED = 0,  # No changes.
 	ADDED = 1,       # Entry does not exist in old version.

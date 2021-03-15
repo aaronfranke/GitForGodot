@@ -16,21 +16,29 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
+[node name="BranchListPanel" type="Panel" parent="."]
 margin_right = 200.0
-margin_bottom = 148.0
+margin_bottom = 174.0
 size_flags_vertical = 3
 
-[node name="BranchList" type="VBoxContainer" parent="ScrollContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="BranchListPanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BranchListVBox" type="VBoxContainer" parent="BranchListPanel/ScrollContainer"]
 margin_right = 200.0
-margin_bottom = 148.0
+margin_bottom = 174.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="BranchItem" parent="ScrollContainer/BranchList" instance=ExtResource( 2 )]
+[node name="BranchItem" parent="BranchListPanel/ScrollContainer/BranchListVBox" instance=ExtResource( 2 )]
 
 [node name="NewBranch" type="VBoxContainer" parent="."]
-margin_top = 152.0
+margin_top = 178.0
 margin_right = 200.0
 margin_bottom = 200.0
 
@@ -38,20 +46,14 @@ margin_bottom = 200.0
 margin_right = 200.0
 margin_bottom = 22.0
 
-[node name="Label" type="Label" parent="NewBranch/Name"]
-margin_right = 87.0
-margin_bottom = 22.0
-text = "New branch:"
-
 [node name="LineEdit" type="LineEdit" parent="NewBranch/Name"]
-margin_left = 91.0
-margin_right = 200.0
+margin_right = 143.0
 margin_bottom = 22.0
 size_flags_horizontal = 3
+placeholder_text = "New branch name here..."
 
-[node name="Button" type="Button" parent="NewBranch"]
-margin_top = 26.0
+[node name="Button" type="Button" parent="NewBranch/Name"]
+margin_left = 147.0
 margin_right = 200.0
-margin_bottom = 48.0
-size_flags_horizontal = 3
-text = "Create branch"
+margin_bottom = 22.0
+text = "Create"

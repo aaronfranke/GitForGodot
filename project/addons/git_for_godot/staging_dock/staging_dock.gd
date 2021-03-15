@@ -9,6 +9,8 @@ var commit_dock
 
 var auto_refresh_time = AUTO_REFRESH_DELAY
 
+var _old_status_dictionary
+
 onready var staged_file_count_label = get_child(0).get_node(@"StagedStatus")
 onready var unstaged_file_count_label = get_child(0).get_node(@"UnstagedStatus")
 onready var staged_files_vbox = get_child(0).get_node(@"StagedFiles/ScrollContainer/VBoxContainer")
@@ -28,6 +30,9 @@ func update_status():
 		status_dictionary = simple_native.get_status()
 	else:
 		return # TODO: Further investigation is needed. Why does it fail?
+	if _old_status_dictionary and status_dictionary.hash() == _old_status_dictionary.hash():
+		return # No need to redraw, it's the same as the old dictionary.
+	_old_status_dictionary = status_dictionary
 	for i in staged_files_vbox.get_children():
 		i.free()
 	for i in unstaged_files_vbox.get_children():
