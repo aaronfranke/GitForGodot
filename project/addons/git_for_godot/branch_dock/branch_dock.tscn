@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://addons/git_for_godot/theme.tres" type="Theme" id=1]
-[ext_resource path="res://addons/git_for_godot/branch_dock/branch_item.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/git_for_godot/branch_dock/branch_dock.gd" type="Script" id=4]
 
 [node name="Branch" type="VBoxContainer"]
@@ -35,24 +34,18 @@ margin_bottom = 174.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="BranchItem" parent="BranchListPanel/ScrollContainer/BranchListVBox" instance=ExtResource( 2 )]
-
-[node name="NewBranch" type="VBoxContainer" parent="."]
+[node name="NewBranch" type="HBoxContainer" parent="."]
 margin_top = 178.0
 margin_right = 200.0
 margin_bottom = 200.0
 
-[node name="Name" type="HBoxContainer" parent="NewBranch"]
-margin_right = 200.0
-margin_bottom = 22.0
-
-[node name="LineEdit" type="LineEdit" parent="NewBranch/Name"]
+[node name="BranchName" type="LineEdit" parent="NewBranch"]
 margin_right = 143.0
 margin_bottom = 22.0
 size_flags_horizontal = 3
 placeholder_text = "New branch name here..."
 
-[node name="Button" type="Button" parent="NewBranch/Name"]
+[node name="CreateButton" type="Button" parent="NewBranch"]
 margin_left = 147.0
 margin_right = 200.0
 margin_bottom = 22.0

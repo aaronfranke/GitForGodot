@@ -54,6 +54,7 @@ func update_status():
 			staging_file_instance.setup(key, value & LibGit2Defines.GIT_STATUS_WT_CHANGES)
 			unstaged_files_vbox.add_child(staging_file_instance)
 
+	# Update the commit dock with the current status.
 	staged_file_count_label.text = str(staged_file_count) + " staged file" + ("" if staged_file_count == 1 else "s")
 	unstaged_file_count_label.text = str(unstaged_file_count) + " unstaged file" + ("" if unstaged_file_count == 1 else "s")
 	var commit_dock_status_label = commit_dock.get_child(0).get_node("StageStatus")

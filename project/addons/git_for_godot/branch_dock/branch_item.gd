@@ -6,7 +6,7 @@ var simple_native
 
 func setup(branch_name, branch_type):
 	name = branch_name
-	$BranchName.text = branch_name
+	$Name.text = branch_name
 	var checkout = $Checkout
 	checkout.set_tooltip("Check out branch " + branch_name + ".\n\n" +
 			"If any unstaged changes are present, \n" +
