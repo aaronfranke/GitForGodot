@@ -22,6 +22,11 @@ INSTANCE_METHOD(commit);
 INSTANCE_METHOD(get_head_message);
 INSTANCE_METHOD(get_branch_list);
 INSTANCE_METHOD(checkout_branch);
+INSTANCE_METHOD(create_branch);
+INSTANCE_METHOD(rename_branch);
+INSTANCE_METHOD(delete_branch);
+INSTANCE_METHOD(get_upstream_branch);
+INSTANCE_METHOD(set_upstream_branch);
 
 void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *p_options) {
 	api = p_options->api_struct;

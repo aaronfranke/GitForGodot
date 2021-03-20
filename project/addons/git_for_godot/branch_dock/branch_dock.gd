@@ -3,16 +3,29 @@ extends Control
 
 const AUTO_REFRESH_DELAY = 0.5
 const BRANCH_ITEM_SCENE = preload("res://addons/git_for_godot/branch_dock/branch_item.tscn")
+const VALID_BRANCH_REGEX = "^(?!@$|/|.*([/.]\\.|//|@\\{|\\\\))[^\\000-\\037\\177 ~^:?*[]+/[^\\000-\\037\\177 ~^:?*[]+(?<!\\.lock|[/.])$"
 
 var auto_refresh_time = AUTO_REFRESH_DELAY
 var remote_dock
 var simple_native
 
 var _old_branch_dictionary
+var _regex: RegEx
 
-onready var branch_list_vbox = get_node(@"BranchListPanel/ScrollContainer/BranchListVBox")
+onready var _branch_list_vbox = get_node(@"BranchListPanel/ScrollContainer/BranchListVBox")
+onready var _new_branch_hbox = get_node(@"NewBranch")
+onready var _new_branch_name = _new_branch_hbox.get_node(@"BranchName")
+onready var _new_branch_button = _new_branch_hbox.get_node(@"CreateButton")
+
+func _ready():
+	_new_branch_button.set_tooltip("Create a new branch on top\nof the checked out branch.")
+
 
 func _process(delta):
+	# Validate branch name each frame and disable the create button if invalid.
+	if _regex and _new_branch_name:
+		var result = _regex.search_all("refs/heads/" + _new_branch_name.text)
+		_new_branch_button.disabled = result.empty() or (_new_branch_name.text in _old_branch_dictionary.keys())
 	auto_refresh_time -= delta
 	if auto_refresh_time < 0.0:
 		auto_refresh_time += AUTO_REFRESH_DELAY
@@ -26,6 +39,9 @@ func check_for_update():
 	else:
 		return # TODO: Further investigation is needed. Why does it fail?
 
+	if not _regex:
+		_regex = RegEx.new()
+		_regex.compile(VALID_BRANCH_REGEX)
 	# Tell the branch dock to update.
 	if visible:
 		update_status(branch_dictionary)
@@ -40,7 +56,7 @@ func update_status(branch_dictionary):
 	_old_branch_dictionary = branch_dictionary
 
 	# Delete old children.
-	for i in branch_list_vbox.get_children():
+	for i in _branch_list_vbox.get_children():
 		i.free()
 
 	# Add new children.
@@ -49,6 +65,12 @@ func update_status(branch_dictionary):
 		print(str(value) + " " + key)
 		if value & LibGit2Defines.GitBranch.LOCAL:
 			var branch_item_instance = BRANCH_ITEM_SCENE.instance()
-			branch_item_instance.simple_native = simple_native
-			branch_item_instance.setup(key, value)
-			branch_list_vbox.add_child(branch_item_instance)
+			branch_item_instance.setup(simple_native, self, _regex, key, value)
+			_branch_list_vbox.add_child(branch_item_instance)
+
+
+func _on_CreateButton_pressed():
+	# Validate branch name before creating.
+	var result = _regex.search_all("refs/heads/" + _new_branch_name.text)
+	if not (result.empty() or (_new_branch_name.text in _old_branch_dictionary.keys())):
+		simple_native.create_branch(_new_branch_name.text)

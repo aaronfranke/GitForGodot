@@ -43,6 +43,11 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 	REGISTER_INSTANCE_METHOD(get_head_message);
 	REGISTER_INSTANCE_METHOD(get_branch_list);
 	REGISTER_INSTANCE_METHOD(checkout_branch);
+	REGISTER_INSTANCE_METHOD(create_branch);
+	REGISTER_INSTANCE_METHOD(rename_branch);
+	REGISTER_INSTANCE_METHOD(delete_branch);
+	REGISTER_INSTANCE_METHOD(get_upstream_branch);
+	REGISTER_INSTANCE_METHOD(set_upstream_branch);
 
 #undef REGISTER_INSTANCE_METHOD
 }
@@ -364,16 +369,97 @@ INSTANCE_METHOD(checkout_branch) {
 	godot_string branch_ref_str = godot_string_operator_plus(&prefix, &branch_name_str);
 	godot_char_string branch_ref_cs = stocs(&branch_ref_str);
 	const char *branch_ref_cp = godot_char_string_get_data(&branch_ref_cs);
-	print(prefix);
-	print(branch_name_str);
-	print(branch_ref_str);
 	// Switch branches.
-	git_object *treeish;
 	git_repository_set_head(repo, branch_ref_cp);
 	git_checkout_options opt = GIT_CHECKOUT_OPTIONS_INIT;
 	opt.baseline_index = index;
 	git_checkout_head(repo, &opt);
 	// Write in-memory changes to disk and clean up.
+	godot_string_destroy(&prefix);
+	godot_string_destroy(&branch_name_str);
+	godot_string_destroy(&branch_ref_str);
+	godot_char_string_destroy(&branch_ref_cs);
 	git_index_write(index);
 	git_index_free(index);
+}
+
+INSTANCE_METHOD(create_branch) {
+	validate_git_repo_is_initialized();
+	// Parse the branch name.
+	godot_string branch_str = godot_variant_as_string(p_args[0]);
+	godot_char_string branch_cs = stocs(&branch_str);
+	const char *branch_cp = godot_char_string_get_data(&branch_cs);
+	// Get information for the current HEAD of the repository.
+	git_oid head_oid;
+	git_reference_name_to_id(&head_oid, repo, "HEAD");
+	git_commit *head;
+	git_commit_lookup(&head, repo, &head_oid);
+	// Create the branch.
+	git_reference *branch;
+	git_branch_create(&branch, repo, branch_cp, head, 0);
+	// Clean up memory.
+	godot_string_destroy(&branch_str);
+	godot_char_string_destroy(&branch_cs);
+	git_commit_free(head);
+	git_reference_free(branch);
+}
+
+INSTANCE_METHOD(rename_branch) {
+	validate_git_repo_is_initialized();
+	// Parse the old branch name.
+	godot_string old_branch_str = godot_variant_as_string(p_args[0]);
+	godot_char_string old_branch_cs = stocs(&old_branch_str);
+	const char *old_branch_cp = godot_char_string_get_data(&old_branch_cs);
+	// Parse the new branch name.
+	godot_string new_branch_str = godot_variant_as_string(p_args[1]);
+	godot_char_string new_branch_cs = stocs(&new_branch_str);
+	const char *new_branch_cp = godot_char_string_get_data(&new_branch_cs);
+	// Get the branch.
+	git_reference *old_branch;
+	git_branch_lookup(&old_branch, repo, old_branch_cp, GIT_BRANCH_LOCAL);
+	// Rename the branch.
+	git_reference *new_branch;
+	git_branch_move(&new_branch, old_branch, new_branch_cp, 0);
+	// Clean up memory.
+	godot_string_destroy(&old_branch_str);
+	godot_string_destroy(&new_branch_str);
+	godot_char_string_destroy(&old_branch_cs);
+	godot_char_string_destroy(&new_branch_cs);
+	git_reference_free(old_branch);
+	git_reference_free(new_branch);
+}
+
+INSTANCE_METHOD(delete_branch) {
+	validate_git_repo_is_initialized();
+	// Parse the branch name.
+	godot_string branch_str = godot_variant_as_string(p_args[0]);
+	godot_char_string branch_cs = stocs(&branch_str);
+	const char *branch_cp = godot_char_string_get_data(&branch_cs);
+	// Get the branch.
+	git_reference *branch;
+	print(itos(git_branch_lookup(&branch, repo, branch_cp, GIT_BRANCH_LOCAL)));
+	// Delete the branch.
+	git_branch_delete(branch);
+	// Clean up memory.
+	godot_string_destroy(&branch_str);
+	godot_char_string_destroy(&branch_cs);
+	git_reference_free(branch);
+}
+
+INSTANCE_METHOD(get_upstream_branch) {
+	validate_git_repo_is_initialized();
+	// Parse the branch name.
+	godot_string branch_str = godot_variant_as_string(p_args[0]);
+	godot_char_string branch_cs = stocs(&branch_str);
+	const char *branch_cp = godot_char_string_get_data(&branch_cs);
+	// Clean up memory.
+}
+
+INSTANCE_METHOD(set_upstream_branch) {
+	validate_git_repo_is_initialized();
+	// Parse the branch name.
+	godot_string branch_str = godot_variant_as_string(p_args[0]);
+	godot_char_string branch_cs = stocs(&branch_str);
+	const char *branch_cp = godot_char_string_get_data(&branch_cs);
+	// Clean up memory.
 }

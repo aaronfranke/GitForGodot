@@ -50,3 +50,4 @@ margin_left = 147.0
 margin_right = 200.0
 margin_bottom = 22.0
 text = "Create"
+[connection signal="pressed" from="NewBranch/CreateButton" to="." method="_on_CreateButton_pressed"]

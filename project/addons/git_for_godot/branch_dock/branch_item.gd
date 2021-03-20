@@ -1,15 +1,46 @@
 tool
 extends Control
 
-var simple_native
+# These are set in setup.
+var _simple_native
+var _branch_name: String
+var _branch_dock: Control
+var _rename_popup: ConfirmationDialog
+var _rename_name: LineEdit
+var _rename_ok: Button
+var _delete_popup: ConfirmationDialog
+var _upstream_popup: ConfirmationDialog
+var _upstream_url: LineEdit
+var _regex: RegEx
+
+onready var menu = $Menu
+onready var popup_menu = $PopupMenu
 
 
-func setup(branch_name, branch_type):
+func _process(_delta):
+	if _rename_name:
+		var result = _regex.search_all("refs/heads/" + _rename_name.text)
+		_rename_ok.disabled = result.empty()
+
+
+func setup(simple_native, branch_dock, regex, branch_name, branch_type):
+	_simple_native = simple_native
+	_branch_dock = branch_dock
+	_branch_name = branch_name
 	name = branch_name
 	$Name.text = branch_name
+	_rename_popup = $RenamePopup
+	_rename_name = _rename_popup.get_node(@"Name")
+	_rename_name.text = branch_name
+	_rename_ok = _rename_popup.get_ok()
+	_delete_popup = $DeletePopup
+	_delete_popup.dialog_text = "Are you sure you wish to delete branch " + branch_name + "?"
+	_delete_popup.get_ok().text = "Delete"
+	_upstream_popup = $UpstreamPopup
+	_upstream_url = _upstream_popup.get_node(@"VBoxContainer/UpstreamURL")
 	var checkout = $Checkout
 	checkout.set_tooltip("Check out branch " + branch_name + ".\n\n" +
-			"If any unstaged changes are present, \n" +
+			"If any unstaged changes are present,\n" +
 			"those files will be preserved, and\n" +
 			"any staged changes will be discarded.\n" +
 			"Consider discarding all uncommitted\n" +
@@ -18,11 +49,43 @@ func setup(branch_name, branch_type):
 		checkout.texture_normal = load("res://addons/git_for_godot/icons/Check.svg")
 		checkout.texture_hover = load("res://addons/git_for_godot/icons/CheckHover.svg")
 		checkout.texture_pressed = load("res://addons/git_for_godot/icons/CheckHover.svg")
+	_regex = regex
 
 
 func _on_Checkout_pressed():
-	simple_native.checkout_branch(name)
+	_simple_native.checkout_branch(name)
 
 
 func _on_Menu_pressed():
-	print("menu")
+	menu.release_focus()
+	popup_menu.popup(Rect2(menu.rect_global_position + Vector2(24, 0), popup_menu.rect_size))
+
+
+func _on_PopupMenu_id_pressed(id):
+	match id:
+		0: # Rename branch
+			_rename_popup.popup_centered()
+		1: # Delete branch
+			_delete_popup.popup_centered()
+		2: # Change upstream
+			_upstream_popup.popup_centered()
+
+
+func _on_RenamePopup_confirmed():
+	var result = _regex.search_all("refs/heads/" + _rename_name.text)
+	if not result.empty():
+		_simple_native.rename_branch(_branch_name, _rename_name.text)
+		# Setting this to a negative value makes the branch dock refresh next frame.
+		_branch_dock.auto_refresh_time = -0.01
+
+
+func _on_DeletePopup_confirmed():
+	_simple_native.delete_branch(_branch_name)
+	# Setting this to a negative value makes the branch dock refresh next frame.
+	_branch_dock.auto_refresh_time = -0.01
+
+
+func _on_UpstreamPopup_confirmed():
+	pass # Replace with function body.
+	# Setting this to a negative value makes the branch dock refresh next frame.
+	_branch_dock.auto_refresh_time = -0.01

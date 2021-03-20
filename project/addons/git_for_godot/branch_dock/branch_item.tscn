@@ -55,5 +55,72 @@ stretch_mode = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="PopupMenu" type="PopupMenu" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_right = 140.0
+margin_bottom = 70.0
+rect_min_size = Vector2( 140, 70 )
+items = [ "Rename branch", null, 0, false, false, 0, 0, null, "", false, "Delete branch", null, 0, false, false, 1, 0, null, "", false, "Change upstream", null, 0, false, false, 2, 0, null, "", false ]
+allow_search = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RenamePopup" type="ConfirmationDialog" parent="."]
+margin_right = 200.0
+margin_bottom = 70.0
+window_title = "Rename Branch"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Name" type="LineEdit" parent="RenamePopup"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = -8.0
+margin_bottom = -36.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DeletePopup" type="ConfirmationDialog" parent="."]
+margin_right = 200.0
+margin_bottom = 70.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="UpstreamPopup" type="ConfirmationDialog" parent="."]
+margin_right = 200.0
+margin_bottom = 124.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UpstreamPopup"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = -8.0
+margin_bottom = -36.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="UpstreamURL" type="LineEdit" parent="UpstreamPopup/VBoxContainer"]
+margin_right = 184.0
+margin_bottom = 24.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="pressed" from="Checkout" to="." method="_on_Checkout_pressed"]
 [connection signal="pressed" from="Menu" to="." method="_on_Menu_pressed"]
+[connection signal="id_pressed" from="PopupMenu" to="." method="_on_PopupMenu_id_pressed"]
+[connection signal="confirmed" from="RenamePopup" to="." method="_on_RenamePopup_confirmed"]
+[connection signal="confirmed" from="DeletePopup" to="." method="_on_DeletePopup_confirmed"]
+[connection signal="confirmed" from="UpstreamPopup" to="." method="_on_UpstreamPopup_confirmed"]
