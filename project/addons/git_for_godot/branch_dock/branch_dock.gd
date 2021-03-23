@@ -6,6 +6,7 @@ const BRANCH_ITEM_SCENE = preload("res://addons/git_for_godot/branch_dock/branch
 const VALID_BRANCH_REGEX = "^(?!@$|/|.*([/.]\\.|//|@\\{|\\\\))[^\\000-\\037\\177 ~^:?*[]+/[^\\000-\\037\\177 ~^:?*[]+(?<!\\.lock|[/.])$"
 
 var auto_refresh_time = AUTO_REFRESH_DELAY
+var force_refresh := true
 var remote_dock
 var simple_native
 
@@ -27,7 +28,7 @@ func _process(delta):
 		var result = _regex.search_all("refs/heads/" + _new_branch_name.text)
 		_new_branch_button.disabled = result.empty() or (_new_branch_name.text in _old_branch_dictionary.keys())
 	auto_refresh_time -= delta
-	if auto_refresh_time < 0.0:
+	if force_refresh or auto_refresh_time < 0.0:
 		auto_refresh_time += AUTO_REFRESH_DELAY
 		check_for_update()
 
@@ -43,16 +44,18 @@ func check_for_update():
 		_regex = RegEx.new()
 		_regex.compile(VALID_BRANCH_REGEX)
 	# Tell the branch dock to update.
-	if visible:
-		update_status(branch_dictionary)
+	if force_refresh or visible:
+		update_status(branch_dictionary, force_refresh)
 	# Tell the remote dock to update.
-	if remote_dock.visible:
-		remote_dock.update_status(branch_dictionary)
+	if force_refresh or remote_dock.visible:
+		remote_dock.update_status(branch_dictionary, force_refresh)
+	force_refresh = false
 
 
-func update_status(branch_dictionary):
-	if _old_branch_dictionary and branch_dictionary.hash() == _old_branch_dictionary.hash():
-		return # No need to redraw, it's the same as the old dictionary.
+func update_status(branch_dictionary, force_refresh):
+	if (not force_refresh) and _old_branch_dictionary:
+		if branch_dictionary.hash() == _old_branch_dictionary.hash():
+			return # No need to redraw, it's the same as the old dictionary.
 	_old_branch_dictionary = branch_dictionary
 
 	# Delete old children.

@@ -90,19 +90,19 @@ func _on_RenamePopup_confirmed():
 	var result = _regex.search_all("refs/heads/" + _rename_name.text)
 	if not result.empty():
 		_simple_native.rename_branch(_branch_name, _rename_name.text)
-		# Setting this to a negative value makes the branch and remote docks refresh next frame.
-		_branch_dock.auto_refresh_time = -0.01
+		# Make the branch and remote docks refresh next frame.
+		_branch_dock.force_update = true
 
 
 func _on_DeletePopup_confirmed():
 	_simple_native.delete_branch(_branch_name)
-	# Setting this to a negative value makes the branch and remote docks refresh next frame.
-	_branch_dock.auto_refresh_time = -0.01
+	# Make the branch and remote docks refresh next frame.
+	_branch_dock.force_update = true
 
 
 func _on_UpstreamPopup_confirmed():
 	var upstream_branch_name = _upstream_remote.get_item_text(_upstream_remote.get_item_index(_upstream_remote.get_selected_id()))
 	upstream_branch_name += "/" + _upstream_branch.text
 	_simple_native.set_upstream_branch(_branch_name, upstream_branch_name)
-	# Setting this to a negative value makes the branch and remote docks refresh next frame.
-	_branch_dock.auto_refresh_time = -0.01
+	# Make the branch and remote docks refresh next frame.
+	_branch_dock.force_update = true

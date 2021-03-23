@@ -8,6 +8,7 @@ var simple_native
 var commit_dock
 
 var auto_refresh_time = AUTO_REFRESH_DELAY
+var force_refresh := true
 
 var _old_status_dictionary
 
@@ -18,7 +19,7 @@ onready var unstaged_files_vbox = get_child(0).get_node(@"UnstagedFiles/ScrollCo
 
 func _process(delta):
 	auto_refresh_time -= delta
-	if auto_refresh_time < 0.0:
+	if force_refresh or auto_refresh_time < 0.0:
 		auto_refresh_time += AUTO_REFRESH_DELAY
 		if visible or commit_dock.visible:
 			update_status()
@@ -30,8 +31,9 @@ func update_status():
 		status_dictionary = simple_native.get_status()
 	else:
 		return # TODO: Further investigation is needed. Why does it fail?
-	if _old_status_dictionary and status_dictionary.hash() == _old_status_dictionary.hash():
-		return # No need to redraw, it's the same as the old dictionary.
+	if (not force_refresh) and _old_status_dictionary:
+		if status_dictionary.hash() == _old_status_dictionary.hash():
+			return # No need to redraw, it's the same as the old dictionary.
 	_old_status_dictionary = status_dictionary
 	for i in staged_files_vbox.get_children():
 		i.free()
@@ -59,3 +61,4 @@ func update_status():
 	unstaged_file_count_label.text = str(unstaged_file_count) + " unstaged file" + ("" if unstaged_file_count == 1 else "s")
 	var commit_dock_status_label = commit_dock.get_child(0).get_node("StageStatus")
 	commit_dock_status_label.set_staged_and_unstaged_file_counts(staged_file_count, unstaged_file_count)
+	force_refresh = false

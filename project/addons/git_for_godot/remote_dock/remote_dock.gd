@@ -9,9 +9,10 @@ var simple_native
 var _old_branch_dictionary
 
 
-func update_status(branch_dictionary: Dictionary):
-	if _old_branch_dictionary and branch_dictionary.hash() == _old_branch_dictionary.hash():
-		return # No need to redraw, it's the same as the old dictionary.
+func update_status(branch_dictionary: Dictionary, force_refresh: bool):
+	if (not force_refresh) and _old_branch_dictionary:
+		if branch_dictionary.hash() == _old_branch_dictionary.hash():
+			return # No need to redraw, it's the same as the old dictionary.
 	_old_branch_dictionary = branch_dictionary
 
 	# Free old children.
