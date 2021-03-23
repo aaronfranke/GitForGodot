@@ -21,6 +21,7 @@ INSTANCE_METHOD(discard_unstaged);
 INSTANCE_METHOD(commit);
 INSTANCE_METHOD(get_head_message);
 INSTANCE_METHOD(get_branch_list);
+INSTANCE_METHOD(get_remote_list);
 INSTANCE_METHOD(checkout_branch);
 INSTANCE_METHOD(create_branch);
 INSTANCE_METHOD(rename_branch);

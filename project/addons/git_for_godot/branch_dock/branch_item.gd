@@ -10,7 +10,8 @@ var _rename_name: LineEdit
 var _rename_ok: Button
 var _delete_popup: ConfirmationDialog
 var _upstream_popup: ConfirmationDialog
-var _upstream_url: LineEdit
+var _upstream_remote: OptionButton
+var _upstream_branch: LineEdit
 var _regex: RegEx
 
 onready var menu = $Menu
@@ -18,6 +19,8 @@ onready var popup_menu = $PopupMenu
 
 
 func _process(_delta):
+	if not _regex:
+		return
 	if _rename_name:
 		var result = _regex.search_all("refs/heads/" + _rename_name.text)
 		_rename_ok.disabled = result.empty()
@@ -37,7 +40,19 @@ func setup(simple_native, branch_dock, regex, branch_name, branch_type):
 	_delete_popup.dialog_text = "Are you sure you wish to delete branch " + branch_name + "?"
 	_delete_popup.get_ok().text = "Delete"
 	_upstream_popup = $UpstreamPopup
-	_upstream_url = _upstream_popup.get_node(@"VBoxContainer/UpstreamURL")
+	var upstream_hbox = _upstream_popup.get_node(@"VBoxContainer/Upstream")
+	_upstream_remote = upstream_hbox.get_node(@"Remote")
+	_upstream_branch = upstream_hbox.get_node(@"Branch")
+	var remotes: Array = simple_native.get_remote_list()
+	var upstream_name: String = simple_native.get_upstream_branch(branch_name)
+	if not upstream_name.empty():
+		var upstream_name_parts = upstream_name.split("/", true, 1)
+		_upstream_branch.text = upstream_name_parts[1]
+		_upstream_remote.add_item(upstream_name_parts[0])
+		remotes.erase(upstream_name_parts[0])
+	print(remotes)
+	for item in remotes:
+		_upstream_remote.add_item(item)
 	var checkout = $Checkout
 	checkout.set_tooltip("Check out branch " + branch_name + ".\n\n" +
 			"If any unstaged changes are present,\n" +
@@ -75,17 +90,19 @@ func _on_RenamePopup_confirmed():
 	var result = _regex.search_all("refs/heads/" + _rename_name.text)
 	if not result.empty():
 		_simple_native.rename_branch(_branch_name, _rename_name.text)
-		# Setting this to a negative value makes the branch dock refresh next frame.
+		# Setting this to a negative value makes the branch and remote docks refresh next frame.
 		_branch_dock.auto_refresh_time = -0.01
 
 
 func _on_DeletePopup_confirmed():
 	_simple_native.delete_branch(_branch_name)
-	# Setting this to a negative value makes the branch dock refresh next frame.
+	# Setting this to a negative value makes the branch and remote docks refresh next frame.
 	_branch_dock.auto_refresh_time = -0.01
 
 
 func _on_UpstreamPopup_confirmed():
-	pass # Replace with function body.
-	# Setting this to a negative value makes the branch dock refresh next frame.
+	var upstream_branch_name = _upstream_remote.get_item_text(_upstream_remote.get_item_index(_upstream_remote.get_selected_id()))
+	upstream_branch_name += "/" + _upstream_branch.text
+	_simple_native.set_upstream_branch(_branch_name, upstream_branch_name)
+	# Setting this to a negative value makes the branch and remote docks refresh next frame.
 	_branch_dock.auto_refresh_time = -0.01

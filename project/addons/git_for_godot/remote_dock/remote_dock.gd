@@ -18,19 +18,10 @@ func update_status(branch_dictionary: Dictionary):
 	for i in $RemoteListPanel/ScrollContainer/RemoteListVBox.get_children():
 		i.free()
 
-	# Make a dictionary with only one entry for each remote.
-	var remotes_dict = Dictionary()
-	for key in branch_dictionary.keys():
-		var value = branch_dictionary[key]
-		if value & LibGit2Defines.GitBranch.REMOTE:
-			var remote_name = key.split("/", true, 1)[0]
-			remotes_dict[remote_name] = value
+	var remotes = simple_native.get_remote_list()
 
 	# Add new children.
-	for key in remotes_dict.keys():
-		var value = remotes_dict[key]
-		print("remote dock " + str(value) + " " + key)
-		if value & LibGit2Defines.GitBranch.REMOTE:
-			var remote_item_instance = REMOTE_ITEM_SCENE.instance()
-			remote_item_instance.setup(branch_dictionary, key)
-			$RemoteListPanel/ScrollContainer/RemoteListVBox.add_child(remote_item_instance)
+	for item in remotes:
+		var remote_item_instance = REMOTE_ITEM_SCENE.instance()
+		remote_item_instance.setup(branch_dictionary, item)
+		$RemoteListPanel/ScrollContainer/RemoteListVBox.add_child(remote_item_instance)

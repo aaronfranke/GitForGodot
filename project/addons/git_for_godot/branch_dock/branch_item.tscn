@@ -95,8 +95,9 @@ __meta__ = {
 }
 
 [node name="UpstreamPopup" type="ConfirmationDialog" parent="."]
-margin_right = 200.0
-margin_bottom = 124.0
+margin_right = 317.0
+margin_bottom = 86.0
+rect_min_size = Vector2( 300, 80 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -112,9 +113,26 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="UpstreamURL" type="LineEdit" parent="UpstreamPopup/VBoxContainer"]
-margin_right = 184.0
+[node name="Label" type="Label" parent="UpstreamPopup/VBoxContainer"]
+margin_right = 301.0
+margin_bottom = 14.0
+text = "Which remote branch should be the upstream?"
+
+[node name="Upstream" type="HBoxContainer" parent="UpstreamPopup/VBoxContainer"]
+margin_top = 18.0
+margin_right = 301.0
+margin_bottom = 42.0
+
+[node name="Remote" type="OptionButton" parent="UpstreamPopup/VBoxContainer/Upstream"]
+margin_right = 100.0
 margin_bottom = 24.0
+rect_min_size = Vector2( 100, 0 )
+
+[node name="Branch" type="LineEdit" parent="UpstreamPopup/VBoxContainer/Upstream"]
+margin_left = 104.0
+margin_right = 301.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }

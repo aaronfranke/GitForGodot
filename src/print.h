@@ -49,3 +49,6 @@ void print4(godot_string p_string1, godot_string p_string2, godot_string p_strin
 	s = godot_string_insert(&s, godot_string_length(&s), p_string4);
 	godot_print(&s);
 }
+
+// Error macros.
+#define ERR(m_err) godot_print_error(m_err, __FUNCTION__, __FILE__, __LINE__);

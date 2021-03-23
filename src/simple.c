@@ -42,6 +42,7 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 	REGISTER_INSTANCE_METHOD(commit);
 	REGISTER_INSTANCE_METHOD(get_head_message);
 	REGISTER_INSTANCE_METHOD(get_branch_list);
+	REGISTER_INSTANCE_METHOD(get_remote_list);
 	REGISTER_INSTANCE_METHOD(checkout_branch);
 	REGISTER_INSTANCE_METHOD(create_branch);
 	REGISTER_INSTANCE_METHOD(rename_branch);
@@ -358,6 +359,31 @@ INSTANCE_METHOD(get_branch_list) {
 	return ret;
 }
 
+INSTANCE_METHOD(get_remote_list) {
+	validate_git_repo_is_initialized();
+	// Get a list of remotes.
+	git_strarray remotes_git_strarray;
+	git_remote_list(&remotes_git_strarray, repo);
+	// Convert to an array of Godot strings.
+	godot_array remotes_array;
+	godot_array_new(&remotes_array);
+	for (int i = 0; i < remotes_git_strarray.count; i++) {
+		godot_string remote_string = cptos(remotes_git_strarray.strings[i]);
+		godot_variant remote_string_variant;
+		godot_variant_new_string(&remote_string_variant, &remote_string);
+		godot_array_push_back(&remotes_array, &remote_string_variant);
+		// Clean up memory.
+		godot_string_destroy(&remote_string);
+		godot_variant_destroy(&remote_string_variant);
+	}
+	godot_variant remotes_variant;
+	godot_variant_new_array(&remotes_variant, &remotes_array);
+	// Clean up memory.
+	godot_array_destroy(&remotes_array);
+	git_strarray_free(&remotes_git_strarray);
+	return remotes_variant;
+}
+
 INSTANCE_METHOD(checkout_branch) {
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
@@ -452,14 +478,52 @@ INSTANCE_METHOD(get_upstream_branch) {
 	godot_string branch_str = godot_variant_as_string(p_args[0]);
 	godot_char_string branch_cs = stocs(&branch_str);
 	const char *branch_cp = godot_char_string_get_data(&branch_cs);
+	// Get the local branch.
+	git_reference *local_branch = NULL;
+	git_branch_lookup(&local_branch, repo, branch_cp, GIT_BRANCH_LOCAL);
+	// Get the upstream of the branch.
+	git_reference *upstream_branch = NULL;
+	git_branch_upstream(&upstream_branch, local_branch);
+	// Get the name of the upstream.
+	const char *upstream_name_cp;
+	if (upstream_branch == NULL) {
+		upstream_name_cp = "";
+	} else {
+		git_branch_name(&upstream_name_cp, upstream_branch);
+	}
+	godot_string upstream_name_string = cptos(upstream_name_cp);
+	godot_variant upstream_name_variant;
+	godot_variant_new_string(&upstream_name_variant, &upstream_name_string);
 	// Clean up memory.
+	godot_string_destroy(&branch_str);
+	godot_string_destroy(&upstream_name_string);
+	godot_char_string_destroy(&branch_cs);
+	git_reference_free(local_branch);
+	git_reference_free(upstream_branch);
+	return upstream_name_variant;
 }
 
 INSTANCE_METHOD(set_upstream_branch) {
 	validate_git_repo_is_initialized();
-	// Parse the branch name.
-	godot_string branch_str = godot_variant_as_string(p_args[0]);
-	godot_char_string branch_cs = stocs(&branch_str);
-	const char *branch_cp = godot_char_string_get_data(&branch_cs);
+	// Parse the local branch name.
+	godot_string local_branch_str = godot_variant_as_string(p_args[0]);
+	godot_char_string local_branch_cs = stocs(&local_branch_str);
+	const char *local_branch_cp = godot_char_string_get_data(&local_branch_cs);
+	// Parse the upstream branch name.
+	godot_string upstream_branch_str = godot_variant_as_string(p_args[1]);
+	godot_char_string upstream_branch_cs = stocs(&upstream_branch_str);
+	const char *upstream_branch_cp = godot_char_string_get_data(&upstream_branch_cs);
+	// Get the local branch.
+	git_reference *local_branch;
+	git_branch_lookup(&local_branch, repo, local_branch_cp, GIT_BRANCH_LOCAL);
+	// Set the upstream branch. This will fail if there's no upstream branch with the same name.
+	if (git_branch_set_upstream(local_branch, upstream_branch_cp)) {
+		ERR("Can't set upstream branch, doesn't exist on remote.")
+	}
 	// Clean up memory.
+	godot_string_destroy(&local_branch_str);
+	godot_char_string_destroy(&local_branch_cs);
+	godot_string_destroy(&upstream_branch_str);
+	godot_char_string_destroy(&upstream_branch_cs);
+	git_reference_free(local_branch);
 }
