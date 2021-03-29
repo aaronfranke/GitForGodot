@@ -27,6 +27,7 @@ func _enter_tree():
 	staging_dock_instance = StagingDock.instance()
 
 	# Set scene variables.
+	main_screen_instance.simple_native = simple_native
 	branch_dock_instance.simple_native = simple_native
 	commit_dock_instance.simple_native = simple_native
 	remote_dock_instance.simple_native = simple_native

@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://addons/git_for_godot/history_main_screen/git_history.gd" type="Script" id=1]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/branch.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/git_for_godot/theme.tres" type="Theme" id=3]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/history_main_screen.gd" type="Script" id=4]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/commit_name.tscn" type="PackedScene" id=5]
+[ext_resource path="res://addons/git_for_godot/history_main_screen/basic_actions.gd" type="Script" id=6]
 
 [node name="HistoryMainScreen" type="MarginContainer"]
 anchor_right = 1.0
@@ -53,14 +54,15 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Control" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer"]
+[node name="BasicActions" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer"]
 margin_right = 994.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 0, 32 )
 size_flags_horizontal = 3
 alignment = 1
+script = ExtResource( 6 )
 
-[node name="Fetch" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/Control"]
+[node name="Fetch" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
 margin_left = 430.0
 margin_right = 477.0
 margin_bottom = 32.0
@@ -69,7 +71,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Pull" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/Control"]
+[node name="Pull" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
 margin_left = 481.0
 margin_right = 517.0
 margin_bottom = 32.0
@@ -78,7 +80,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Push" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/Control"]
+[node name="Push" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
 margin_left = 521.0
 margin_right = 564.0
 margin_bottom = 32.0
@@ -193,3 +195,6 @@ margin_bottom = 146.0
 margin_top = 150.0
 margin_right = 578.0
 margin_bottom = 176.0
+[connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Fetch" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Fetch_pressed"]
+[connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Pull" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Pull_pressed"]
+[connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Push" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Push_pressed"]

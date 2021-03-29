@@ -14,7 +14,7 @@ var _upstream_remote: OptionButton
 var _upstream_branch: LineEdit
 var _regex: RegEx
 
-onready var menu = $Menu
+onready var menu_button = $Menu
 onready var popup_menu = $PopupMenu
 
 
@@ -72,8 +72,8 @@ func _on_Checkout_pressed():
 
 
 func _on_Menu_pressed():
-	menu.release_focus()
-	popup_menu.popup(Rect2(menu.rect_global_position + Vector2(24, 0), popup_menu.rect_size))
+	menu_button.release_focus()
+	popup_menu.popup(Rect2(menu_button.rect_global_position + Vector2(24, 0), popup_menu.rect_size))
 
 
 func _on_PopupMenu_id_pressed(id):

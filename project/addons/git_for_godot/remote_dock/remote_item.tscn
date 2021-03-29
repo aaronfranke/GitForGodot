@@ -65,8 +65,43 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="PopupMenu" type="PopupMenu" parent="RemoteDetails"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_right = 123.0
+margin_bottom = 70.0
+rect_min_size = Vector2( 130, 70 )
+items = [ "Fetch remote", null, 0, false, false, 0, 0, null, "", false, "Rename remote", null, 0, false, false, 1, 0, null, "", false, "Delete remote", null, 0, false, false, 2, 0, null, "", false, "Change URLs", null, 0, false, false, 3, 0, null, "", false ]
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RenamePopup" type="ConfirmationDialog" parent="RemoteDetails"]
+margin_right = 200.0
+margin_bottom = 70.0
+window_title = "Rename Remote"
+
+[node name="Name" type="LineEdit" parent="RemoteDetails/RenamePopup"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 192.0
+margin_bottom = 34.0
+
+[node name="DeletePopup" type="ConfirmationDialog" parent="RemoteDetails"]
+margin_right = 200.0
+margin_bottom = 70.0
+
+[node name="ChangeURLsPopup" type="ConfirmationDialog" parent="RemoteDetails"]
+margin_right = 200.0
+margin_bottom = 70.0
+dialog_text = "Not yet implemented"
+
 [node name="RemoteBranchList" type="VBoxContainer" parent="."]
 margin_top = 32.0
 margin_right = 180.0
 margin_bottom = 32.0
-[connection signal="pressed" from="RemoteDetails/Menu" to="RemoteDetails" method="_on_Menu_pressed"]
+[connection signal="pressed" from="RemoteDetails/Menu" to="." method="_on_Menu_pressed"]
+[connection signal="id_pressed" from="RemoteDetails/PopupMenu" to="." method="_on_PopupMenu_id_pressed"]
+[connection signal="confirmed" from="RemoteDetails/RenamePopup" to="." method="_on_RenamePopup_confirmed"]
+[connection signal="confirmed" from="RemoteDetails/DeletePopup" to="." method="_on_DeletePopup_confirmed"]
+[connection signal="confirmed" from="RemoteDetails/ChangeURLsPopup" to="." method="_on_ChangeURLsPopup_confirmed"]

@@ -49,5 +49,7 @@ placeholder_text = "New branch name here..."
 margin_left = 147.0
 margin_right = 200.0
 margin_bottom = 22.0
+hint_tooltip = "Create a new branch on top
+of the checked out branch."
 text = "Create"
 [connection signal="pressed" from="NewBranch/CreateButton" to="." method="_on_CreateButton_pressed"]

@@ -24,5 +24,5 @@ func update_status(branch_dictionary: Dictionary, force_refresh: bool):
 	# Add new children.
 	for item in remotes:
 		var remote_item_instance = REMOTE_ITEM_SCENE.instance()
-		remote_item_instance.setup(branch_dictionary, item)
+		remote_item_instance.setup(simple_native, branch_dictionary, item)
 		$RemoteListPanel/ScrollContainer/RemoteListVBox.add_child(remote_item_instance)

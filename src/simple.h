@@ -12,6 +12,8 @@ GDCALLINGCONV void simple_destructor(godot_object *p_instance, void *p_method_da
 
 #define INSTANCE_METHOD(m_name) godot_variant simple_##m_name(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args)
 
+#define INSTANCE_METHOD_CALL(m_name, m_num_args, m_args) simple_##m_name(p_instance, p_method_data, p_user_data, m_num_args, m_args)
+
 INSTANCE_METHOD(get_data);
 INSTANCE_METHOD(get_status);
 INSTANCE_METHOD(stage_one);
@@ -28,6 +30,8 @@ INSTANCE_METHOD(rename_branch);
 INSTANCE_METHOD(delete_branch);
 INSTANCE_METHOD(get_upstream_branch);
 INSTANCE_METHOD(set_upstream_branch);
+INSTANCE_METHOD(fetch_all);
+INSTANCE_METHOD(fetch_one);
 
 void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *p_options) {
 	api = p_options->api_struct;

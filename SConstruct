@@ -77,6 +77,7 @@ env.Append(CPPPATH=[".", godot_headers_path])
 # Make sure our library looks in the target path for any other
 # libraries it may need. The path needs to be project-relative.
 env.Append(LINKFLAGS=["-Wl,-rpath,addons/git_for_godot/gdnative/" + env["platform"]])
+env.Append(LINKFLAGS=["-Lproject/addons/git_for_godot/gdnative/" + env["platform"]])
 env.Append(LIBS=["git2"])
 
 # Tweak this if you want to use different folders, or more folders, to store your source code in.

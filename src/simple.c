@@ -49,6 +49,8 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 	REGISTER_INSTANCE_METHOD(delete_branch);
 	REGISTER_INSTANCE_METHOD(get_upstream_branch);
 	REGISTER_INSTANCE_METHOD(set_upstream_branch);
+	REGISTER_INSTANCE_METHOD(fetch_all);
+	REGISTER_INSTANCE_METHOD(fetch_one);
 
 #undef REGISTER_INSTANCE_METHOD
 }
@@ -526,4 +528,39 @@ INSTANCE_METHOD(set_upstream_branch) {
 	godot_string_destroy(&upstream_branch_str);
 	godot_char_string_destroy(&upstream_branch_cs);
 	git_reference_free(local_branch);
+}
+
+INSTANCE_METHOD(fetch_all) {
+	validate_git_repo_is_initialized();
+	// Get the remotes.
+	godot_variant remote_list = INSTANCE_METHOD_CALL(get_remote_list, 0, NULL);
+	godot_array remote_array = godot_variant_as_array(&remote_list);
+	godot_int size = godot_array_size(&remote_array);
+	// Fetch all of the remotes.
+	for (godot_int i = 0; i < size; i++) {
+		godot_variant remote_variant = godot_array_get(&remote_array, i);
+		godot_variant *args[1] = { &remote_variant };
+		INSTANCE_METHOD_CALL(fetch_one, 1, args);
+		godot_variant_destroy(&remote_variant);
+	}
+	// Clean up memory.
+	godot_variant_destroy(&remote_list);
+	godot_array_destroy(&remote_array);
+}
+
+INSTANCE_METHOD(fetch_one) {
+	validate_git_repo_is_initialized();
+	// Parse the remote name.
+	godot_string remote_name_str = godot_variant_as_string(p_args[0]);
+	godot_char_string remote_name_cs = stocs(&remote_name_str);
+	const char *remote_name_cp = godot_char_string_get_data(&remote_name_cs);
+	// Get the remote.
+	git_remote *remote;
+	git_remote_lookup(&remote, repo, remote_name_cp);
+	// Fetch from the remote.
+	git_remote_fetch(remote, NULL, NULL, NULL);
+	// Clean up memory.
+	godot_string_destroy(&remote_name_str);
+	godot_char_string_destroy(&remote_name_cs);
+	git_remote_free(remote);
 }
