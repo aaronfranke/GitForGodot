@@ -1,6 +1,6 @@
-[submodule "godot_headers"]
-	path = godot_headers
-	url = https://github.com/godotengine/godot_headers
+[submodule "godot-headers"]
+	path = godot-headers
+	url = https://github.com/godotengine/godot-headers
 [submodule "libgit2"]
 	path = libgit2
 	url = https://github.com/aaronfranke/libgit2

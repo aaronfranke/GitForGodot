@@ -32,6 +32,8 @@ INSTANCE_METHOD(get_upstream_branch);
 INSTANCE_METHOD(set_upstream_branch);
 INSTANCE_METHOD(fetch_all);
 INSTANCE_METHOD(fetch_one);
+INSTANCE_METHOD(pull);
+INSTANCE_METHOD(push);
 
 void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *p_options) {
 	api = p_options->api_struct;

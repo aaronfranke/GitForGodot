@@ -66,6 +66,7 @@ script = ExtResource( 6 )
 margin_left = 430.0
 margin_right = 477.0
 margin_bottom = 32.0
+hint_tooltip = "Fetch from all remotes"
 text = "Fetch"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -75,6 +76,7 @@ __meta__ = {
 margin_left = 481.0
 margin_right = 517.0
 margin_bottom = 32.0
+hint_tooltip = "Pull from the current branch's upstream"
 text = "Pull"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -84,6 +86,7 @@ __meta__ = {
 margin_left = 521.0
 margin_right = 564.0
 margin_bottom = 32.0
+hint_tooltip = "Push from the current branch to its upstream"
 text = "Push"
 __meta__ = {
 "_edit_use_anchors_": false

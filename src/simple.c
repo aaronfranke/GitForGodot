@@ -51,6 +51,8 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 	REGISTER_INSTANCE_METHOD(set_upstream_branch);
 	REGISTER_INSTANCE_METHOD(fetch_all);
 	REGISTER_INSTANCE_METHOD(fetch_one);
+	REGISTER_INSTANCE_METHOD(pull);
+	REGISTER_INSTANCE_METHOD(push);
 
 #undef REGISTER_INSTANCE_METHOD
 }
@@ -563,4 +565,16 @@ INSTANCE_METHOD(fetch_one) {
 	godot_string_destroy(&remote_name_str);
 	godot_char_string_destroy(&remote_name_cs);
 	git_remote_free(remote);
+}
+
+INSTANCE_METHOD(pull) {
+	validate_git_repo_is_initialized();
+	//
+	// Clean up memory.
+}
+
+INSTANCE_METHOD(push) {
+	validate_git_repo_is_initialized();
+	//
+	// Clean up memory.
 }
