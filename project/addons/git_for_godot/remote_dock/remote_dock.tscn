@@ -17,7 +17,7 @@ __meta__ = {
 
 [node name="RemoteListPanel" type="Panel" parent="."]
 margin_right = 200.0
-margin_bottom = 200.0
+margin_bottom = 174.0
 size_flags_vertical = 3
 
 [node name="ScrollContainer" type="ScrollContainer" parent="RemoteListPanel"]
@@ -29,6 +29,58 @@ __meta__ = {
 
 [node name="RemoteListVBox" type="VBoxContainer" parent="RemoteListPanel/ScrollContainer"]
 margin_right = 200.0
-margin_bottom = 200.0
+margin_bottom = 174.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="NewRemote" type="HBoxContainer" parent="."]
+margin_top = 178.0
+margin_right = 200.0
+margin_bottom = 200.0
+
+[node name="CreateButton" type="Button" parent="NewRemote"]
+margin_right = 200.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+text = "Add remote"
+
+[node name="CreatePopup" type="ConfirmationDialog" parent="NewRemote/CreateButton"]
+margin_left = 300.0
+margin_right = 700.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 400, 100 )
+window_title = "Add Remote"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="NewRemote/CreateButton/CreatePopup"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = -8.0
+margin_bottom = -38.0
+custom_constants/separation = 10
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RemoteName" type="LineEdit" parent="NewRemote/CreateButton/CreatePopup/VBoxContainer"]
+margin_right = 384.0
+margin_bottom = 22.0
+placeholder_text = "Remote Name"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RemoteURL" type="LineEdit" parent="NewRemote/CreateButton/CreatePopup/VBoxContainer"]
+margin_top = 32.0
+margin_right = 384.0
+margin_bottom = 54.0
+placeholder_text = "Remote URL"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="NewRemote/CreateButton" to="." method="_on_CreateButton_pressed"]
+[connection signal="confirmed" from="NewRemote/CreateButton/CreatePopup" to="." method="_on_CreatePopup_confirmed"]

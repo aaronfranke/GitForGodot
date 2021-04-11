@@ -49,6 +49,9 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 	REGISTER_INSTANCE_METHOD(delete_branch);
 	REGISTER_INSTANCE_METHOD(get_upstream_branch);
 	REGISTER_INSTANCE_METHOD(set_upstream_branch);
+	REGISTER_INSTANCE_METHOD(add_remote);
+	REGISTER_INSTANCE_METHOD(delete_remote);
+	REGISTER_INSTANCE_METHOD(rename_remote);
 	REGISTER_INSTANCE_METHOD(fetch_all);
 	REGISTER_INSTANCE_METHOD(fetch_one);
 	REGISTER_INSTANCE_METHOD(pull);
@@ -530,6 +533,59 @@ INSTANCE_METHOD(set_upstream_branch) {
 	godot_string_destroy(&upstream_branch_str);
 	godot_char_string_destroy(&upstream_branch_cs);
 	git_reference_free(local_branch);
+}
+
+INSTANCE_METHOD(add_remote) {
+	validate_git_repo_is_initialized();
+	// Parse the remote name an.
+	godot_string remote_name_str = godot_variant_as_string(p_args[0]);
+	godot_char_string remote_name_cs = stocs(&remote_name_str);
+	const char *remote_name_cp = godot_char_string_get_data(&remote_name_cs);
+	godot_string remote_url_str = godot_variant_as_string(p_args[1]);
+	godot_char_string remote_url_cs = stocs(&remote_url_str);
+	const char *remote_url_cp = godot_char_string_get_data(&remote_url_cs);
+	// Create the remote.
+	git_remote *remote;
+	git_remote_create(&remote, repo, remote_name_cp, remote_url_cp);
+	// Clean up memory.
+	godot_string_destroy(&remote_name_str);
+	godot_char_string_destroy(&remote_name_cs);
+	godot_string_destroy(&remote_url_str);
+	godot_char_string_destroy(&remote_url_cs);
+	git_remote_free(remote);
+}
+
+INSTANCE_METHOD(delete_remote) {
+	validate_git_repo_is_initialized();
+	// Parse the remote name.
+	godot_string remote_name_str = godot_variant_as_string(p_args[0]);
+	godot_char_string remote_name_cs = stocs(&remote_name_str);
+	const char *remote_name_cp = godot_char_string_get_data(&remote_name_cs);
+	// Delete the remote.
+	git_remote_delete(repo, remote_name_cp);
+	// Clean up memory.
+	godot_string_destroy(&remote_name_str);
+	godot_char_string_destroy(&remote_name_cs);
+}
+
+INSTANCE_METHOD(rename_remote) {
+	validate_git_repo_is_initialized();
+	// Parse the remote names.
+	godot_string old_remote_name_str = godot_variant_as_string(p_args[0]);
+	godot_char_string old_remote_name_cs = stocs(&old_remote_name_str);
+	const char *old_remote_name_cp = godot_char_string_get_data(&old_remote_name_cs);
+	godot_string new_remote_name_str = godot_variant_as_string(p_args[1]);
+	godot_char_string new_remote_name_cs = stocs(&new_remote_name_str);
+	const char *new_remote_name_cp = godot_char_string_get_data(&new_remote_name_cs);
+	// Rename the remote.
+	git_strarray problems;
+	git_remote_rename(&problems, repo, old_remote_name_cp, new_remote_name_cp);
+	// Clean up memory.
+	godot_string_destroy(&old_remote_name_str);
+	godot_char_string_destroy(&old_remote_name_cs);
+	godot_string_destroy(&new_remote_name_str);
+	godot_char_string_destroy(&new_remote_name_cs);
+	git_strarray_free(&problems);
 }
 
 INSTANCE_METHOD(fetch_all) {

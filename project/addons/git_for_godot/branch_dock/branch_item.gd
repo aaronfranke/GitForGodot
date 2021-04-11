@@ -50,7 +50,6 @@ func setup(simple_native, branch_dock, regex, branch_name, branch_type):
 		_upstream_branch.text = upstream_name_parts[1]
 		_upstream_remote.add_item(upstream_name_parts[0])
 		remotes.erase(upstream_name_parts[0])
-	print(remotes)
 	for item in remotes:
 		_upstream_remote.add_item(item)
 	var checkout = $Checkout

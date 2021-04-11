@@ -29,11 +29,9 @@ func setup(simple_native, branch_dictionary: Dictionary, remote_name: String):
 	_delete_popup.dialog_text = "Are you sure you wish to delete remote " + remote_name + "?"
 	_delete_popup.get_ok().text = "Delete"
 	_change_urls_popup = $RemoteDetails/ChangeURLsPopup
-	print("remote item " + remote_name)
 
 	for key in branch_dictionary.keys():
 		var value = branch_dictionary[key]
-		print("remote item " + str(value) + " " + key)
 		if value & LibGit2Defines.GitBranch.REMOTE:
 			if key.begins_with(remote_name):
 				var remote_branch_name = key.substr(remote_name.length() + 1)
@@ -48,11 +46,11 @@ func _on_Menu_pressed():
 
 
 func _on_RenamePopup_confirmed():
-	print("_on_RenamePopup_confirmed")
+	_simple_native.rename_remote(_remote_name, _rename_name.text)
 
 
 func _on_DeletePopup_confirmed():
-	print("_on_DeletePopup_confirmed")
+	_simple_native.delete_remote(_remote_name)
 
 
 func _on_ChangeURLsPopup_confirmed():

@@ -65,7 +65,6 @@ func update_status(branch_dictionary, force_refresh):
 	# Add new children.
 	for key in branch_dictionary.keys():
 		var value = branch_dictionary[key]
-		print(str(value) + " " + key)
 		if value & LibGit2Defines.GitBranch.LOCAL:
 			var branch_item_instance = BRANCH_ITEM_SCENE.instance()
 			branch_item_instance.setup(simple_native, self, _regex, key, value)
