@@ -1,7 +1,6 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://addons/git_for_godot/history_main_screen/git_history.gd" type="Script" id=1]
-[ext_resource path="res://addons/git_for_godot/history_main_screen/branch.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/git_for_godot/theme.tres" type="Theme" id=3]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/history_main_screen.gd" type="Script" id=4]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/basic_actions.gd" type="Script" id=6]
@@ -114,40 +113,6 @@ script = ExtResource( 1 )
 margin_right = 120.0
 margin_bottom = 534.0
 rect_min_size = Vector2( 120, 0 )
-
-[node name="Branch" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
-anchor_right = 1.0
-margin_right = 0.0
-
-[node name="Branch2" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
-anchor_right = 1.0
-margin_top = 30.0
-margin_right = 0.0
-margin_bottom = 56.0
-
-[node name="Branch3" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
-anchor_right = 1.0
-margin_top = 60.0
-margin_right = 0.0
-margin_bottom = 86.0
-
-[node name="Branch4" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
-anchor_right = 1.0
-margin_top = 90.0
-margin_right = 0.0
-margin_bottom = 116.0
-
-[node name="Branch5" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
-anchor_right = 1.0
-margin_top = 120.0
-margin_right = 0.0
-margin_bottom = 146.0
-
-[node name="Branch6" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
-anchor_right = 1.0
-margin_top = 150.0
-margin_right = 0.0
-margin_bottom = 176.0
 
 [node name="Commits" type="HSplitContainer" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory"]
 margin_left = 128.0

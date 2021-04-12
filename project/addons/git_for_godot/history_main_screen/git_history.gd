@@ -17,6 +17,7 @@ enum CommitDictionaryIndex {
 }
 
 const AUTO_REFRESH_DELAY = 2.0
+const BRANCH_DISPLAY_SCENE = preload("res://addons/git_for_godot/history_main_screen/branch_display.tscn")
 const COMMIT_DISPLAY_SCENE = preload("res://addons/git_for_godot/history_main_screen/commit_display.tscn")
 
 var auto_refresh_time = AUTO_REFRESH_DELAY
@@ -24,6 +25,7 @@ var force_refresh := true
 
 var _simple_native
 var _old_commit_dictionary
+var _branches_holder
 var _names_vbox
 var _placeholder_node
 
@@ -37,6 +39,7 @@ func _process(delta):
 
 func setup(simple_native):
 	_simple_native = simple_native
+	_branches_holder = $Branches
 	_names_vbox = $Commits/Names
 	_placeholder_node = _names_vbox.get_child(0)
 
@@ -63,6 +66,8 @@ func update_status(commit_dictionary, force_refresh):
 	for i in _names_vbox.get_children():
 		if i.name != "Placeholder":
 			i.free()
+	for i in _branches_holder.get_children():
+		i.free()
 
 	# Add new children.
 	var system_unix_time = OS.get_unix_time()
@@ -83,3 +88,18 @@ func update_status(commit_dictionary, force_refresh):
 			if child_timestamp > timestamp:
 				target_node = child
 		_names_vbox.add_child_below_node(target_node, commit_display)
+	# Add branches next to the commits at the head.
+	var branch_heads_dictionary = commit_dictionary["branch_heads_dictionary"]
+	for key in branch_heads_dictionary.keys():
+		var branch_head_hash = branch_heads_dictionary[key]
+		var branch_display = BRANCH_DISPLAY_SCENE.instance()
+		branch_display.setup(key)
+		branch_display.anchor_right = 1
+		branch_display.margin_right = 0
+		_branches_holder.add_child(branch_display)
+		# Figure out which commit we should place the branch next to.
+		for i in range(1, _names_vbox.get_child_count()):
+			var child = _names_vbox.get_child(i)
+			if branch_head_hash == child.commit_hash:
+				branch_display.commit = child
+				continue

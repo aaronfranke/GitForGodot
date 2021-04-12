@@ -5,8 +5,9 @@ var commit_time
 var commit_hash
 
 
-func setup(commit_time_, system_unix_time, commit_name, commit_hash):
+func setup(commit_time_, system_unix_time, commit_name, commit_hash_):
 	commit_time = commit_time_
+	commit_hash = commit_hash_
 	$HBoxContainer/Name.text = commit_name
 	hint_tooltip = commit_hash
 	name = commit_hash

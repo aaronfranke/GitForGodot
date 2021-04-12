@@ -52,4 +52,7 @@ void print4(godot_string p_string1, godot_string p_string2, godot_string p_strin
 
 // Error macros.
 #define ERR(m_err) godot_print_error(m_err, __FUNCTION__, __FILE__, __LINE__);
-#define ERR_ARGC(m_num_args) if (p_num_args != m_num_args) { ERR("Invalid number of arguments."); }
+#define ERR_ARGC(m_num_args)                 \
+	if (p_num_args != m_num_args) {          \
+		ERR("Invalid number of arguments."); \
+	}
