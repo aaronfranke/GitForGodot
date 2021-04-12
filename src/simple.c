@@ -502,7 +502,6 @@ INSTANCE_METHOD(get_all_commits_dictionary) {
 			godot_string branch_name_str = cptos(branch_name_cp);
 			godot_variant branch_name_variant;
 			godot_variant_new_string(&branch_name_variant, &branch_name_str);
-			print(branch_name_str);
 			// Get the commit object from the branch.
 			git_object *first_commit_object = NULL;
 			git_reference_peel(&first_commit_object, out_branch_ref, GIT_OBJECT_COMMIT);

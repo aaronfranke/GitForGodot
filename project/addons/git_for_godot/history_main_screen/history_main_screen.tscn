@@ -1,15 +1,15 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://addons/git_for_godot/history_main_screen/git_history.gd" type="Script" id=1]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/branch.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/git_for_godot/theme.tres" type="Theme" id=3]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/history_main_screen.gd" type="Script" id=4]
-[ext_resource path="res://addons/git_for_godot/history_main_screen/commit_name.tscn" type="PackedScene" id=5]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/basic_actions.gd" type="Script" id=6]
 
 [node name="HistoryMainScreen" type="MarginContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+rect_clip_content = true
 size_flags_vertical = 3
 theme = ExtResource( 3 )
 custom_constants/margin_right = 5
@@ -166,34 +166,7 @@ margin_bottom = 534.0
 rect_min_size = Vector2( 200, 0 )
 custom_constants/separation = 4
 
-[node name="CommitName" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names" instance=ExtResource( 5 )]
-margin_right = 758.0
-margin_bottom = 26.0
-
-[node name="CommitName2" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names" instance=ExtResource( 5 )]
-margin_top = 30.0
-margin_right = 758.0
-margin_bottom = 56.0
-
-[node name="CommitName3" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names" instance=ExtResource( 5 )]
-margin_top = 60.0
-margin_right = 758.0
-margin_bottom = 86.0
-
-[node name="CommitName4" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names" instance=ExtResource( 5 )]
-margin_top = 90.0
-margin_right = 758.0
-margin_bottom = 116.0
-
-[node name="CommitName5" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names" instance=ExtResource( 5 )]
-margin_top = 120.0
-margin_right = 758.0
-margin_bottom = 146.0
-
-[node name="CommitName6" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names" instance=ExtResource( 5 )]
-margin_top = 150.0
-margin_right = 758.0
-margin_bottom = 176.0
+[node name="Placeholder" type="Node" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names"]
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Fetch" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Fetch_pressed"]
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Pull" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Pull_pressed"]
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Push" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Push_pressed"]
