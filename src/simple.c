@@ -9,7 +9,9 @@ typedef struct user_data_struct {
 } user_data_struct;
 
 git_repository *repo = NULL;
+git_revwalk *walker = NULL;
 
+#pragma region Helper methods.
 void validate_git_repo_is_initialized() {
 	if (repo == NULL) {
 		git_libgit2_init();
@@ -17,6 +19,83 @@ void validate_git_repo_is_initialized() {
 	}
 }
 
+godot_array git_commit_to_godot_array(git_commit *commit) {
+	godot_array array;
+	godot_array_new(&array);
+	{
+		const git_time_t time = git_commit_time(commit);
+		godot_variant variant;
+		godot_variant_new_int(&variant, time);
+		godot_array_push_back(&array, &variant);
+		godot_variant_destroy(&variant);
+	}
+	{
+		godot_string string = cptos(git_commit_summary(commit));
+		godot_variant variant;
+		godot_variant_new_string(&variant, &string);
+		godot_array_push_back(&array, &variant);
+		godot_string_destroy(&string);
+		godot_variant_destroy(&variant);
+	}
+	{
+		godot_string string = cptos(git_commit_body(commit));
+		godot_variant variant;
+		godot_variant_new_string(&variant, &string);
+		godot_array_push_back(&array, &variant);
+		godot_string_destroy(&string);
+		godot_variant_destroy(&variant);
+	}
+	{
+		git_signature *signature = (git_signature *)git_commit_author(commit);
+		for (int i = 0; i < 2; i++) {
+			{
+				godot_string string = cptos(signature->email);
+				godot_variant variant;
+				godot_variant_new_string(&variant, &string);
+				godot_array_push_back(&array, &variant);
+				godot_string_destroy(&string);
+				godot_variant_destroy(&variant);
+			}
+			{
+				godot_string string = cptos(signature->name);
+				godot_variant variant;
+				godot_variant_new_string(&variant, &string);
+				godot_array_push_back(&array, &variant);
+				godot_string_destroy(&string);
+				godot_variant_destroy(&variant);
+			}
+			{
+				godot_variant variant;
+				godot_variant_new_int(&variant, signature->when.time);
+				godot_array_push_back(&array, &variant);
+				godot_variant_destroy(&variant);
+			}
+			if (i == 0) {
+				signature = (git_signature *)git_commit_committer(commit);
+			}
+		}
+	}
+	{
+		unsigned int parent_count = git_commit_parentcount(commit);
+		godot_variant variant;
+		godot_variant_new_int(&variant, parent_count);
+		godot_array_push_back(&array, &variant);
+		godot_variant_destroy(&variant);
+		for (unsigned int i = 0; i < parent_count; i++) {
+			const git_oid *parent_oid = git_commit_parent_id(commit, i);
+			char commit_hash[41] = "";
+			git_oid_fmt(commit_hash, parent_oid);
+			godot_string commit_hash_string = cptos(commit_hash);
+			godot_variant commit_hash_variant;
+			godot_variant_new_string(&commit_hash_variant, &commit_hash_string);
+			godot_array_push_back(&array, &commit_hash_variant);
+		}
+	}
+	return array;
+}
+#pragma endregion Helper methods.
+
+#pragma region GDNative methods.
 void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 	godot_instance_create_func create = { NULL, NULL, NULL };
 	create.create_func = &simple_constructor;
@@ -43,6 +122,7 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 	REGISTER_INSTANCE_METHOD(get_head_message);
 	REGISTER_INSTANCE_METHOD(get_branch_list);
 	REGISTER_INSTANCE_METHOD(get_remote_list);
+	REGISTER_INSTANCE_METHOD(get_all_commits_dictionary);
 	REGISTER_INSTANCE_METHOD(checkout_branch);
 	REGISTER_INSTANCE_METHOD(create_branch);
 	REGISTER_INSTANCE_METHOD(rename_branch);
@@ -76,6 +156,7 @@ GDCALLINGCONV void *simple_constructor(godot_object *p_instance, void *p_method_
 GDCALLINGCONV void simple_destructor(godot_object *p_instance, void *p_method_data, void *p_user_data) {
 	api->godot_free(p_user_data);
 }
+#pragma endregion GDNative methods.
 
 INSTANCE_METHOD(get_data) {
 	godot_string data;
@@ -389,6 +470,108 @@ INSTANCE_METHOD(get_remote_list) {
 	godot_array_destroy(&remotes_array);
 	git_strarray_free(&remotes_git_strarray);
 	return remotes_variant;
+}
+
+INSTANCE_METHOD(get_all_commits_dictionary) {
+	ERR_ARGC(1);
+	validate_git_repo_is_initialized();
+	// Get the index of the repository.
+	git_index *index;
+	git_repository_index(&index, repo);
+	// Parse the limit from the args.
+	int64_t commit_limit = godot_variant_as_int(p_args[0]);
+	// Set up the dictionary for the commit information. The hashes are keys.
+	godot_dictionary commit_dictionary;
+	godot_dictionary_new(&commit_dictionary);
+	if (walker == NULL) {
+		git_revwalk_new(&walker, repo);
+	}
+	// Scope for branch iteration. Everything is saved to commit_dictionary.
+	{
+		godot_dictionary branch_heads_dictionary;
+		godot_dictionary_new(&branch_heads_dictionary);
+		// Iterate over all branches.
+		git_branch_iterator *iterator;
+		git_branch_iterator_new(&iterator, repo, GIT_BRANCH_ALL);
+		git_reference *out_branch_ref;
+		git_branch_t out_branch_type;
+		while (!git_branch_next(&out_branch_ref, &out_branch_type, iterator)) {
+			// Branch name as variant.
+			const char *branch_name_cp;
+			git_branch_name(&branch_name_cp, out_branch_ref);
+			godot_string branch_name_str = cptos(branch_name_cp);
+			godot_variant branch_name_variant;
+			godot_variant_new_string(&branch_name_variant, &branch_name_str);
+			print(branch_name_str);
+			// Get the commit object from the branch.
+			git_object *first_commit_object = NULL;
+			git_reference_peel(&first_commit_object, out_branch_ref, GIT_OBJECT_COMMIT);
+			const git_oid *first_commit_oid = git_object_id(first_commit_object);
+			// Push the first commit to the revwalker and start walking.
+			git_revwalk_push(walker, first_commit_oid);
+			git_oid next_commit_oid;
+			for (int64_t i = 0; i < commit_limit && !git_revwalk_next(&next_commit_oid, walker); i++) {
+				// Look up the commit from its OID.
+				git_commit *commit;
+				git_commit_lookup(&commit, repo, &next_commit_oid);
+				// Get the SHA1 hash of the commit as a string.
+				char commit_hash[41] = "";
+				git_oid_fmt(commit_hash, &next_commit_oid);
+				godot_string commit_hash_string = cptos(commit_hash);
+				godot_variant commit_hash_variant;
+				godot_variant_new_string(&commit_hash_variant, &commit_hash_string);
+				// If this commit is a branch head, save the hash there.
+				if (git_oid_cmp(first_commit_oid, &next_commit_oid) == 0) {
+					godot_dictionary_set(&branch_heads_dictionary, &branch_name_variant, &commit_hash_variant);
+				}
+				// Check if this hash is already in the dictionary.
+				if (godot_dictionary_has(&commit_dictionary, &commit_hash_variant)) {
+					// Hey, I've seen this one!
+					i = commit_limit;
+					// Clean up memory.
+					godot_string_destroy(&commit_hash_string);
+					godot_variant_destroy(&commit_hash_variant);
+					continue;
+				}
+				// Convert the commit info to an array and add it to the dictionary.
+				godot_array commit_array = git_commit_to_godot_array(commit);
+				godot_variant commit_variant;
+				godot_variant_new_array(&commit_variant, &commit_array);
+				godot_dictionary_set(&commit_dictionary, &commit_hash_variant, &commit_variant);
+				// Clean up memory (for this commit).
+				godot_string_destroy(&commit_hash_string);
+				godot_variant_destroy(&commit_hash_variant);
+				godot_array_destroy(&commit_array);
+				godot_variant_destroy(&commit_variant);
+			}
+			git_revwalk_reset(walker);
+			// Clean up memory (for this branch revwalk).
+			godot_string_destroy(&branch_name_str);
+			godot_variant_destroy(&branch_name_variant);
+			git_object_free(first_commit_object);
+		}
+		// Save the branch heads dictionary inside of commit_dictionary.
+		godot_variant branch_heads_dictionary_variant;
+		godot_variant_new_dictionary(&branch_heads_dictionary_variant, &branch_heads_dictionary);
+		godot_string branch_heads_string = cptos("branch_heads_dictionary");
+		godot_variant branch_heads_string_variant;
+		godot_variant_new_string(&branch_heads_string_variant, &branch_heads_string);
+		godot_dictionary_set(&commit_dictionary, &branch_heads_string_variant, &branch_heads_dictionary_variant);
+		// Clean up memory (for this branch iterator).
+		godot_dictionary_destroy(&branch_heads_dictionary);
+		godot_variant_destroy(&branch_heads_dictionary_variant);
+		godot_string_destroy(&branch_heads_string);
+		godot_variant_destroy(&branch_heads_string_variant);
+		git_branch_iterator_free(iterator);
+		git_reference_free(out_branch_ref);
+	}
+	// Convert the dictionary to a variant to return.
+	godot_variant ret;
+	godot_variant_new_dictionary(&ret, &commit_dictionary);
+	// Clean up memory.
+	godot_dictionary_destroy(&commit_dictionary);
+	git_index_free(index);
+	return ret;
 }
 
 INSTANCE_METHOD(checkout_branch) {

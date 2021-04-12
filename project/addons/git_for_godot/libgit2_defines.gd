@@ -2,13 +2,15 @@ tool
 class_name LibGit2Defines
 # This file implements some of the constants and enums defined in LibGit2.
 
+# Bitwise enum.
 enum GitBranch {
 	LOCAL = 1,
 	REMOTE = 2,
-	ANY = 3,
+	ANY = 3, # Union of 1 and 2.
 	HEAD = 4,
 }
 
+# Contiguous enum.
 enum GitDelta {
 	UNMODIFIED = 0,  # No changes.
 	ADDED = 1,       # Entry does not exist in old version.
@@ -23,6 +25,7 @@ enum GitDelta {
 	CONFLICTED = 10, # Entry in the index is conflicted.
 }
 
+# Bitwise enum.
 enum GitStatus {
 	CURRENT = 0,
 

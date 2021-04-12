@@ -1,13 +1,9 @@
 tool
 extends HSplitContainer
 
-onready var branches = $Branches
-onready var graph = $Commits/GraphHolder/Graph
-onready var names = $Commits/Names
-
-func _ready():
-	pass
+var _simple_native
 
 
-func add_to_history():
-	pass
+func setup(simple_native):
+	_simple_native = simple_native
+	simple_native.get_all_commits_dictionary(100)

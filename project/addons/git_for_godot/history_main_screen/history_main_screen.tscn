@@ -110,93 +110,89 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 1 )
 
-[node name="Branches" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory"]
-margin_right = 200.0
+[node name="Branches" type="Control" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory"]
+margin_right = 120.0
 margin_bottom = 534.0
-rect_min_size = Vector2( 200, 0 )
-custom_constants/separation = 4
+rect_min_size = Vector2( 120, 0 )
 
 [node name="Branch" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
-margin_right = 200.0
-margin_bottom = 26.0
+anchor_right = 1.0
+margin_right = 0.0
 
 [node name="Branch2" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
+anchor_right = 1.0
 margin_top = 30.0
-margin_right = 200.0
+margin_right = 0.0
 margin_bottom = 56.0
 
 [node name="Branch3" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
+anchor_right = 1.0
 margin_top = 60.0
-margin_right = 200.0
+margin_right = 0.0
 margin_bottom = 86.0
 
 [node name="Branch4" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
+anchor_right = 1.0
 margin_top = 90.0
-margin_right = 200.0
+margin_right = 0.0
 margin_bottom = 116.0
 
 [node name="Branch5" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
+anchor_right = 1.0
 margin_top = 120.0
-margin_right = 200.0
+margin_right = 0.0
 margin_bottom = 146.0
 
 [node name="Branch6" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Branches" instance=ExtResource( 2 )]
+anchor_right = 1.0
 margin_top = 150.0
-margin_right = 200.0
+margin_right = 0.0
 margin_bottom = 176.0
 
 [node name="Commits" type="HSplitContainer" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory"]
-margin_left = 208.0
+margin_left = 128.0
 margin_right = 994.0
 margin_bottom = 534.0
 
-[node name="GraphHolder" type="ScrollContainer" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits"]
-margin_right = 200.0
+[node name="Graph" type="Control" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits"]
+margin_right = 100.0
 margin_bottom = 534.0
-rect_min_size = Vector2( 200, 0 )
-scroll_vertical_enabled = false
-
-[node name="Graph" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/GraphHolder"]
-margin_right = 200.0
-margin_bottom = 534.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-custom_constants/separation = 4
+rect_min_size = Vector2( 100, 200 )
 
 [node name="Names" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits"]
-margin_left = 208.0
-margin_right = 786.0
+margin_left = 108.0
+margin_right = 866.0
 margin_bottom = 534.0
 rect_min_size = Vector2( 200, 0 )
 custom_constants/separation = 4
 
 [node name="CommitName" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names" instance=ExtResource( 5 )]
-margin_right = 578.0
+margin_right = 758.0
 margin_bottom = 26.0
 
 [node name="CommitName2" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names" instance=ExtResource( 5 )]
 margin_top = 30.0
-margin_right = 578.0
+margin_right = 758.0
 margin_bottom = 56.0
 
 [node name="CommitName3" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names" instance=ExtResource( 5 )]
 margin_top = 60.0
-margin_right = 578.0
+margin_right = 758.0
 margin_bottom = 86.0
 
 [node name="CommitName4" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names" instance=ExtResource( 5 )]
 margin_top = 90.0
-margin_right = 578.0
+margin_right = 758.0
 margin_bottom = 116.0
 
 [node name="CommitName5" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names" instance=ExtResource( 5 )]
 margin_top = 120.0
-margin_right = 578.0
+margin_right = 758.0
 margin_bottom = 146.0
 
 [node name="CommitName6" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names" instance=ExtResource( 5 )]
 margin_top = 150.0
-margin_right = 578.0
+margin_right = 758.0
 margin_bottom = 176.0
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Fetch" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Fetch_pressed"]
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Pull" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Pull_pressed"]

@@ -4,7 +4,9 @@
 [ext_resource path="res://addons/git_for_godot/history_main_screen/branch.gd" type="Script" id=2]
 
 [node name="Branch" type="ColorRect"]
-rect_min_size = Vector2( 200, 26 )
+margin_right = 100.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 100, 26 )
 theme = ExtResource( 1 )
 color = Color( 0, 0.219608, 0.329412, 1 )
 script = ExtResource( 2 )
@@ -16,15 +18,15 @@ __meta__ = {
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
-margin_right = -4.0
+margin_right = -3.0
 margin_bottom = -2.0
-rect_min_size = Vector2( 192, 22 )
+rect_min_size = Vector2( 92, 22 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="BranchName" type="Label" parent="HBoxContainer"]
-margin_right = 192.0
+margin_right = 93.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 size_flags_vertical = 3

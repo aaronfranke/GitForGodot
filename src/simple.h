@@ -24,6 +24,7 @@ INSTANCE_METHOD(commit);
 INSTANCE_METHOD(get_head_message);
 INSTANCE_METHOD(get_branch_list);
 INSTANCE_METHOD(get_remote_list);
+INSTANCE_METHOD(get_all_commits_dictionary);
 INSTANCE_METHOD(checkout_branch);
 INSTANCE_METHOD(create_branch);
 INSTANCE_METHOD(rename_branch);

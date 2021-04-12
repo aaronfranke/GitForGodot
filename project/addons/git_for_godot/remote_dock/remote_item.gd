@@ -11,6 +11,7 @@ var _rename_name: LineEdit
 var _rename_ok: Button
 var _delete_popup: ConfirmationDialog
 var _change_urls_popup: ConfirmationDialog
+var _remote_branch_list: VBoxContainer
 
 onready var menu_button = $RemoteDetails/Menu
 onready var popup_menu = $RemoteDetails/PopupMenu
@@ -29,6 +30,7 @@ func setup(simple_native, branch_dictionary: Dictionary, remote_name: String):
 	_delete_popup.dialog_text = "Are you sure you wish to delete remote " + remote_name + "?"
 	_delete_popup.get_ok().text = "Delete"
 	_change_urls_popup = $RemoteDetails/ChangeURLsPopup
+	_remote_branch_list = $RemoteBranchList
 
 	for key in branch_dictionary.keys():
 		var value = branch_dictionary[key]
@@ -37,7 +39,7 @@ func setup(simple_native, branch_dictionary: Dictionary, remote_name: String):
 				var remote_branch_name = key.substr(remote_name.length() + 1)
 				var remote_branch_instance = REMOTE_BRANCH_SCENE.instance()
 				remote_branch_instance.setup(remote_branch_name, value)
-				$RemoteBranchList.add_child(remote_branch_instance)
+				_remote_branch_list.add_child(remote_branch_instance)
 
 
 func _on_Menu_pressed():
@@ -67,3 +69,7 @@ func _on_PopupMenu_id_pressed(id):
 			_delete_popup.popup_centered()
 		3: # Change URLs
 			_change_urls_popup.popup_centered()
+
+
+func _on_Icon_pressed():
+	_remote_branch_list.visible = not _remote_branch_list.visible
