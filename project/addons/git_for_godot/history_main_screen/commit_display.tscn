@@ -3,13 +3,11 @@
 [ext_resource path="res://addons/git_for_godot/theme.tres" type="Theme" id=1]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/commit_display.gd" type="Script" id=2]
 
-[node name="CommitDisplay" type="Control"]
+[node name="CommitDisplay" type="ColorRect"]
 rect_min_size = Vector2( 200, 26 )
 theme = ExtResource( 1 )
+color = Color( 0, 0, 0, 0 )
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 anchor_right = 1.0
@@ -41,3 +39,37 @@ text = "0 days ago"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="PopupMenu" type="PopupMenu" parent="."]
+margin_right = 16.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 150, 100 )
+items = [ "View details", null, 0, false, false, 0, 0, null, "", false, "Cherry-pick commit", null, 0, false, false, 1, 0, null, "", false, "Revert commit", null, 0, false, false, 2, 0, null, "", false, "Reset to this commit", null, 0, false, false, 3, 0, null, "", false, "Create branch here", null, 0, false, false, 4, 0, null, "", false ]
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DetailsPopup" type="AcceptDialog" parent="."]
+margin_right = 300.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 300, 200 )
+window_title = "Commit Details"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DetailsPopup"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 292.0
+margin_bottom = 162.0
+
+[node name="ResetPopup" type="ConfirmationDialog" parent="."]
+margin_right = 200.0
+margin_bottom = 70.0
+window_title = "Reset Commit"
+
+[node name="CreateBranchPopup" type="ConfirmationDialog" parent="."]
+margin_right = 200.0
+margin_bottom = 70.0
+[connection signal="mouse_entered" from="." to="." method="_on_CommitDisplay_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_CommitDisplay_mouse_exited"]
+[connection signal="id_pressed" from="PopupMenu" to="." method="_on_PopupMenu_id_pressed"]
+[connection signal="popup_hide" from="PopupMenu" to="." method="_on_PopupMenu_popup_hide"]

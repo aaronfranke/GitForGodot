@@ -1,21 +1,6 @@
 tool
 extends HSplitContainer
 
-# Keep this in sync with the "git_commit_to_godot_array" method in the C code.
-enum CommitDictionaryIndex {
-	TIMESTAMP = 0,
-	SUMMARY = 1,
-	BODY = 2,
-	AUTHOR_EMAIL = 3,
-	AUTHOR_NAME = 4,
-	AUTHOR_TIME = 5,
-	COMMITTER_EMAIL = 6,
-	COMMITTER_NAME = 7,
-	COMMITTER_TIME = 8,
-	PARENT_COUNT = 9,
-	PARENT_FIRST = 10,
-}
-
 const AUTO_REFRESH_DELAY = 2.0
 const BRANCH_DISPLAY_SCENE = preload("res://addons/git_for_godot/history_main_screen/branch_display.tscn")
 const COMMIT_DISPLAY_SCENE = preload("res://addons/git_for_godot/history_main_screen/commit_display.tscn")
@@ -71,14 +56,16 @@ func update_status(commit_dictionary, force_refresh):
 
 	# Add new children.
 	var system_unix_time = OS.get_unix_time()
+	var local_unix_timestamp = OS.get_unix_time_from_datetime(OS.get_datetime())
+	var local_time_offset_from_utc = local_unix_timestamp - system_unix_time
 	for key in commit_dictionary.keys():
 		if key == "branch_heads_dictionary":
 			continue
 		# Create the commit display instance.
 		var commit_array = commit_dictionary[key]
 		var commit_display = COMMIT_DISPLAY_SCENE.instance()
-		var timestamp = commit_array[CommitDictionaryIndex.TIMESTAMP]
-		commit_display.setup(timestamp, system_unix_time, commit_array[CommitDictionaryIndex.SUMMARY], key)
+		var timestamp = commit_array[0]
+		commit_display.setup(_simple_native, key, commit_array, timestamp, system_unix_time, local_time_offset_from_utc)
 		# Where should we add this child? We want chronological order.
 		# Check all children and add where it's most appropriate.
 		var target_node = _placeholder_node

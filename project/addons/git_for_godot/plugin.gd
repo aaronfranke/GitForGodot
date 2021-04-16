@@ -15,6 +15,7 @@ var branch_dock_instance
 var commit_dock_instance
 var remote_dock_instance
 var staging_dock_instance
+var instances
 
 
 func _enter_tree():
@@ -25,6 +26,7 @@ func _enter_tree():
 	commit_dock_instance = CommitDock.instance()
 	remote_dock_instance = RemoteDock.instance()
 	staging_dock_instance = StagingDock.instance()
+	instances = [main_screen_instance, branch_dock_instance, commit_dock_instance, remote_dock_instance, staging_dock_instance]
 
 	# Set scene variables.
 	main_screen_instance.simple_native = simple_native
@@ -44,10 +46,9 @@ func _enter_tree():
 
 func _exit_tree():
 	remove_control_from_docks(commit_dock_instance)
-	if commit_dock_instance:
-		commit_dock_instance.queue_free()
-	if main_screen_instance:
-		main_screen_instance.queue_free()
+	if instances:
+		for i in instances:
+			i.queue_free()
 
 
 func has_main_screen():
