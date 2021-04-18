@@ -61,7 +61,6 @@ func make_visible(visible):
 		add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_BL, commit_dock_instance)
 		add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_BR, remote_dock_instance)
 		add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_UL, staging_dock_instance)
-		hide_bottom_panel()
 	else:
 		remove_control_from_docks(branch_dock_instance)
 		remove_control_from_docks(commit_dock_instance)

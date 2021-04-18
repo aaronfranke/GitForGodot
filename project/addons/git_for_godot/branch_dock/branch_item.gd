@@ -90,13 +90,13 @@ func _on_RenamePopup_confirmed():
 	if not result.empty():
 		_simple_native.rename_branch(_branch_name, _rename_name.text)
 		# Make the branch and remote docks refresh next frame.
-		_branch_dock.force_update = true
+		_branch_dock.force_refresh = true
 
 
 func _on_DeletePopup_confirmed():
 	_simple_native.delete_branch(_branch_name)
 	# Make the branch and remote docks refresh next frame.
-	_branch_dock.force_update = true
+	_branch_dock.force_refresh = true
 
 
 func _on_UpstreamPopup_confirmed():
@@ -104,4 +104,4 @@ func _on_UpstreamPopup_confirmed():
 	upstream_branch_name += "/" + _upstream_branch.text
 	_simple_native.set_upstream_branch(_branch_name, upstream_branch_name)
 	# Make the branch and remote docks refresh next frame.
-	_branch_dock.force_update = true
+	_branch_dock.force_refresh = true

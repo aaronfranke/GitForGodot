@@ -1,0 +1,20 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Linux Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/aaronfranke/Documents/Godot/3.2-mono/Godot",
+            "args": [
+                "-v", // Verbose output
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": []
+        }
+    ]
+}

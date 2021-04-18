@@ -14,3 +14,4 @@ func _on_Pull_pressed():
 
 func _on_Push_pressed():
 	print("_on_Push_pressed")
+	simple_native.push()

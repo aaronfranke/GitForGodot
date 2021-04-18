@@ -12,11 +12,52 @@ git_repository *repo = NULL;
 git_revwalk *walker = NULL;
 
 #pragma region Helper methods.
+
 void validate_git_repo_is_initialized() {
-	if (repo == NULL) {
-		git_libgit2_init();
-		git_repository_open(&repo, "/home/aaronfranke/workspace/GitForGodot/.git");
+	if (repo != NULL) {
+		return; // Already initialized.
 	}
+	git_libgit2_init();
+	godot_string updir = cptos("../");
+	godot_string dotgit = cptos(".git");
+	godot_string globalized_path_string;
+	{
+		godot_object *ps_singleton = godot_global_get_singleton("ProjectSettings");
+		godot_method_bind *ps_globalize_path = api->godot_method_bind_get_method("ProjectSettings", "globalize_path");
+		godot_string res = cptos("res://");
+		const void *args[] = { (void *) &res };
+		api->godot_method_bind_ptrcall(ps_globalize_path, ps_singleton, args, &globalized_path_string);
+	}
+	godot_class_constructor directory_constructor = api->godot_get_class_constructor("_Directory");
+	godot_object *directory = directory_constructor();
+	godot_method_bind *dir_exists_method = api->godot_method_bind_get_method("_Directory", "dir_exists");
+	int attempts_left = 10;
+	do {
+		godot_string path_string = godot_string_operator_plus(&globalized_path_string, &dotgit);
+		const void *dir_exists_args[] = { (void *) &path_string };
+		godot_bool exists = false;
+		api->godot_method_bind_ptrcall(dir_exists_method, directory, dir_exists_args, &exists);
+		if (exists) {
+			attempts_left = -5; // Magic number that means it was found.
+		} else {
+			attempts_left--;
+			globalized_path_string = godot_string_operator_plus(&globalized_path_string, &updir);
+		}
+		godot_string_destroy(&path_string);
+	} while(attempts_left > 0);
+	if (attempts_left != -5) {
+		ERR("Could not find the .git directory for the Git repository.")
+		return;
+	}
+	godot_string path = godot_string_operator_plus(&globalized_path_string, &dotgit);
+	godot_char_string path_cs = stocs(&path);
+	const char *path_cp = godot_char_string_get_data(&path_cs);
+	godot_string_destroy(&updir);
+	godot_string_destroy(&dotgit);
+	godot_string_destroy(&globalized_path_string);
+	godot_string_destroy(&path);
+	godot_char_string_destroy(&path_cs);
+	git_repository_open(&repo, path_cp);
 }
 
 godot_array git_commit_to_godot_array(git_commit *commit) {
@@ -257,7 +298,6 @@ INSTANCE_METHOD(stage_all) {
 }
 
 INSTANCE_METHOD(unstage_all) {
-	print(cptos("unstage all print"));
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
@@ -278,7 +318,6 @@ INSTANCE_METHOD(unstage_all) {
 }
 
 INSTANCE_METHOD(discard_unstaged) {
-	print(cptos("discard unstaged print"));
 	validate_git_repo_is_initialized();
 	// Force-checkout from the index to discard unstaged changes.
 	git_checkout_options opt = GIT_CHECKOUT_OPTIONS_INIT;
@@ -287,15 +326,11 @@ INSTANCE_METHOD(discard_unstaged) {
 }
 
 INSTANCE_METHOD(commit) {
-	print(cptos("commit print"));
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
 	git_repository_index(&index, repo);
 	print(itos(p_num_args));
-	//print(godot_variant_as_string(p_args[0]));
-	//print(godot_variant_as_string(p_args[1]));
-	//print(godot_variant_as_string(p_args[2]));
 	godot_bool amend = godot_variant_as_bool(p_args[0]);
 	// Parse the commit message.
 	godot_string newline = cptos("\n");
@@ -305,7 +340,6 @@ INSTANCE_METHOD(commit) {
 	message_str = godot_string_operator_plus(&message_str, &desc);
 	godot_char_string message_cs = stocs(&message_str);
 	const char *message = api->godot_char_string_get_data(&message_cs);
-	//print(cptos(message));
 	// Get information for the tree of the commit.
 	git_oid index_tree_oid;
 	git_index_write_tree(&index_tree_oid, index);
@@ -813,6 +847,33 @@ INSTANCE_METHOD(pull) {
 
 INSTANCE_METHOD(push) {
 	validate_git_repo_is_initialized();
-	//
+	// Get the currently checked out branch.
+	git_branch_iterator *iterator;
+	git_branch_iterator_new(&iterator, repo, GIT_BRANCH_LOCAL);
+	git_reference *local_branch_ref;
+	git_branch_t out_branch_type; // Unused.
+	while (!git_branch_next(&local_branch_ref, &out_branch_type, iterator)) {
+		if (git_branch_is_head(local_branch_ref) == 1) {
+			// TODO: git_branch_is_head vs git_branch_is_checked_out?
+			break;
+		}
+	}
+	//git_reference *upstream_branch_reference;
+	//git_branch_upstream(&upstream_branch_reference, local_branch_ref);
+	//git_refspec *refspec;
+	//git_refspec_parse(&refspec, "", 0);
+	char *refspec_cp = "+refs/heads/master";
+	const git_strarray refspec = { &refspec_cp, 1 };
+	git_remote *remote;
+	print(itos(git_remote_lookup(&remote, repo, "origin")));
+	git_push_options opts; // = GIT_PUSH_OPTIONS_INIT;
+	print(itos(git_push_options_init(&opts, GIT_PUSH_OPTIONS_VERSION)));
+	print(itos(git_remote_push(remote, &refspec, &opts)));
+	const git_error *error = git_error_last();
+	print(cptos(error->message));
 	// Clean up memory.
+	git_branch_iterator_free(iterator);
+	git_reference_free(local_branch_ref);
+	//git_refspec_free(refspec);
+	git_remote_free(remote);
 }
