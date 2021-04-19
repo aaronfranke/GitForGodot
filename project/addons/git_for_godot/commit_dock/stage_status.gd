@@ -3,16 +3,20 @@ extends Label
 
 var staged_file_count = 0 setget _set_staged_file_count
 var unstaged_file_count = 0 setget _set_unstaged_file_count
+var is_staged := false
+var is_unstaged := false
+
+var wip_node
 
 
 func update_status():
-	var is_staged = staged_file_count > 0
-	var is_unstaged = unstaged_file_count > 0
+	is_staged = staged_file_count > 0
+	is_unstaged = unstaged_file_count > 0
 	text = ""
 
-	if not is_staged and not is_unstaged:
+	var changes = is_staged or is_unstaged
+	if not changes:
 		text += "No changes, working tree clean."
-		return
 
 	if is_staged:
 		text += str(staged_file_count) + " staged file" + ("" if staged_file_count == 1 else "s")
@@ -21,6 +25,11 @@ func update_status():
 
 	if is_unstaged:
 		text += str(unstaged_file_count) + " unstaged file" + ("" if unstaged_file_count == 1 else "s")
+
+	if wip_node:
+		wip_node.visible = changes
+		if changes:
+			wip_node.get_node(@"HBoxContainer/Changes").text = text
 
 
 func set_staged_and_unstaged_file_counts(staged, unstaged):

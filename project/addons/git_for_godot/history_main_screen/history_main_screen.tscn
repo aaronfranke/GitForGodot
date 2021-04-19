@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://addons/git_for_godot/history_main_screen/git_history.gd" type="Script" id=1]
+[ext_resource path="res://addons/git_for_godot/icons/Modify.svg" type="Texture" id=2]
 [ext_resource path="res://addons/git_for_godot/theme.tres" type="Theme" id=3]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/history_main_screen.gd" type="Script" id=4]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/basic_actions.gd" type="Script" id=6]
@@ -131,7 +132,50 @@ margin_bottom = 534.0
 rect_min_size = Vector2( 200, 0 )
 custom_constants/separation = 4
 
-[node name="Placeholder" type="Node" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names"]
+[node name="WIP" type="ColorRect" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names"]
+visible = false
+margin_right = 758.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 200, 26 )
+theme = ExtResource( 3 )
+color = Color( 0, 0, 0, 0 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names/WIP"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_right = -4.0
+margin_bottom = -2.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WIP" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names/WIP/HBoxContainer"]
+margin_top = 1.0
+margin_right = 34.0
+margin_bottom = 23.0
+text = "WIP"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="TextureRect" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names/WIP/HBoxContainer"]
+margin_left = 38.0
+margin_right = 62.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 24, 24 )
+texture = ExtResource( 2 )
+stretch_mode = 4
+
+[node name="Changes" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names/WIP/HBoxContainer"]
+margin_left = 66.0
+margin_top = 1.0
+margin_right = 104.0
+margin_bottom = 23.0
+text = "Error"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Fetch" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Fetch_pressed"]
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Pull" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Pull_pressed"]
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Push" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Push_pressed"]

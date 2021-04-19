@@ -7,7 +7,7 @@ var _branch_name
 
 
 func _process(_delta):
-	if margin_top != commit.margin_top:
+	if commit and margin_top != commit.margin_top:
 		margin_top = commit.margin_top
 
 

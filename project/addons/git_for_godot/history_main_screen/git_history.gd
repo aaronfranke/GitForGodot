@@ -12,7 +12,7 @@ var _simple_native
 var _old_commit_dictionary
 var _branches_holder
 var _names_vbox
-var _placeholder_node
+var _wip_node
 
 
 func _process(delta):
@@ -26,7 +26,7 @@ func setup(simple_native):
 	_simple_native = simple_native
 	_branches_holder = $Branches
 	_names_vbox = $Commits/Names
-	_placeholder_node = _names_vbox.get_child(0)
+	_wip_node = _names_vbox.get_child(0)
 
 
 func check_for_update():
@@ -49,7 +49,7 @@ func update_status(commit_dictionary, force_refresh):
 
 	# Delete old children.
 	for i in _names_vbox.get_children():
-		if i.name != "Placeholder":
+		if i != _wip_node:
 			i.free()
 	for i in _branches_holder.get_children():
 		i.free()
@@ -68,7 +68,7 @@ func update_status(commit_dictionary, force_refresh):
 		commit_display.setup(_simple_native, key, commit_array, timestamp, system_unix_time, local_time_offset_from_utc)
 		# Where should we add this child? We want chronological order.
 		# Check all children and add where it's most appropriate.
-		var target_node = _placeholder_node
+		var target_node = _wip_node
 		for i in range(1, _names_vbox.get_child_count()):
 			var child = _names_vbox.get_child(i)
 			var child_timestamp = child.commit_time
@@ -87,6 +87,6 @@ func update_status(commit_dictionary, force_refresh):
 		# Figure out which commit we should place the branch next to.
 		for i in range(1, _names_vbox.get_child_count()):
 			var child = _names_vbox.get_child(i)
-			if branch_head_hash == child.commit_hash:
+			if child is preload("res://addons/git_for_godot/history_main_screen/commit_display.gd") and branch_head_hash == child.commit_hash:
 				branch_display.commit = child
 				continue

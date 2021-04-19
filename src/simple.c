@@ -25,7 +25,7 @@ void validate_git_repo_is_initialized() {
 		godot_object *ps_singleton = godot_global_get_singleton("ProjectSettings");
 		godot_method_bind *ps_globalize_path = api->godot_method_bind_get_method("ProjectSettings", "globalize_path");
 		godot_string res = cptos("res://");
-		const void *args[] = { (void *) &res };
+		const void *args[] = { (void *)&res };
 		api->godot_method_bind_ptrcall(ps_globalize_path, ps_singleton, args, &globalized_path_string);
 	}
 	godot_class_constructor directory_constructor = api->godot_get_class_constructor("_Directory");
@@ -34,7 +34,7 @@ void validate_git_repo_is_initialized() {
 	int attempts_left = 10;
 	do {
 		godot_string path_string = godot_string_operator_plus(&globalized_path_string, &dotgit);
-		const void *dir_exists_args[] = { (void *) &path_string };
+		const void *dir_exists_args[] = { (void *)&path_string };
 		godot_bool exists = false;
 		api->godot_method_bind_ptrcall(dir_exists_method, directory, dir_exists_args, &exists);
 		if (exists) {
@@ -44,7 +44,7 @@ void validate_git_repo_is_initialized() {
 			globalized_path_string = godot_string_operator_plus(&globalized_path_string, &updir);
 		}
 		godot_string_destroy(&path_string);
-	} while(attempts_left > 0);
+	} while (attempts_left > 0);
 	if (attempts_left != -5) {
 		ERR("Could not find the .git directory for the Git repository.")
 		return;

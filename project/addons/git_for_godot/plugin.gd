@@ -17,6 +17,8 @@ var remote_dock_instance
 var staging_dock_instance
 var instances
 
+var auto_hide_docks := true
+
 
 func _enter_tree():
 	# Create objects and scenes.
@@ -38,16 +40,23 @@ func _enter_tree():
 	commit_dock_instance.staging_dock = staging_dock_instance
 	remote_dock_instance.branch_dock = branch_dock_instance
 	staging_dock_instance.commit_dock = commit_dock_instance
+	var wip = main_screen_instance.get_node(@"ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names/WIP")
+	commit_dock_instance.get_node(@"VBoxContainer/StageStatus").wip_node = wip
 	# Add the main panel to the editor's main viewport.
 	get_editor_interface().get_editor_viewport().add_child(main_screen_instance)
+	if not auto_hide_docks:
+		add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_UR, branch_dock_instance)
+		add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_BL, commit_dock_instance)
+		add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_BR, remote_dock_instance)
+		add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_UL, staging_dock_instance)
 	# Hide the main panel. Very much required.
 	make_visible(false)
 
 
 func _exit_tree():
-	remove_control_from_docks(commit_dock_instance)
 	if instances:
 		for i in instances:
+			try_remove_control_from_docks(i)
 			i.queue_free()
 
 
@@ -56,18 +65,31 @@ func has_main_screen():
 
 
 func make_visible(visible):
-	if visible:
-		add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_UR, branch_dock_instance)
-		add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_BL, commit_dock_instance)
-		add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_BR, remote_dock_instance)
-		add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_UL, staging_dock_instance)
-	else:
-		remove_control_from_docks(branch_dock_instance)
-		remove_control_from_docks(commit_dock_instance)
-		remove_control_from_docks(remote_dock_instance)
-		remove_control_from_docks(staging_dock_instance)
+	if auto_hide_docks:
+		if visible:
+			try_add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_UR, branch_dock_instance)
+			try_add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_BL, commit_dock_instance)
+			try_add_control_to_dock(EditorPlugin.DOCK_SLOT_LEFT_BR, remote_dock_instance)
+			try_add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_UL, staging_dock_instance)
+		else:
+			try_remove_control_from_docks(branch_dock_instance)
+			try_remove_control_from_docks(commit_dock_instance)
+			try_remove_control_from_docks(remote_dock_instance)
+			try_remove_control_from_docks(staging_dock_instance)
 	if main_screen_instance:
 		main_screen_instance.visible = visible
+
+
+func try_add_control_to_dock(slot, dock):
+	if dock:
+		add_control_to_dock(slot, dock)
+	else:
+		printerr("Dock is null, this should never happen! If you can figure out what causes this, please report a bug or open a PR.")
+
+
+func try_remove_control_from_docks(dock):
+	if dock and dock.get_parent() is TabContainer:
+		remove_control_from_docks(dock)
 
 
 func get_plugin_name():
