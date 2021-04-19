@@ -42,7 +42,7 @@ INSTANCE_METHOD(push);
 void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *p_options) {
 	api = p_options->api_struct;
 
-	for (int i = 0; i < api->num_extensions; i++) {
+	for (unsigned int i = 0; i < api->num_extensions; i++) {
 		switch (api->extensions[i]->type) {
 			case GDNATIVE_EXT_NATIVESCRIPT: {
 				nativescript_api = (godot_gdnative_ext_nativescript_api_struct *)api->extensions[i];
