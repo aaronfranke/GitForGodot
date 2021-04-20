@@ -62,9 +62,14 @@ size_flags_horizontal = 3
 alignment = 1
 script = ExtResource( 6 )
 
+[node name="SpacerLeft" type="Control" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
+margin_right = 392.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+
 [node name="Fetch" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
-margin_left = 430.0
-margin_right = 477.0
+margin_left = 396.0
+margin_right = 443.0
 margin_bottom = 32.0
 hint_tooltip = "Fetch from all remotes"
 text = "Fetch"
@@ -73,8 +78,8 @@ __meta__ = {
 }
 
 [node name="Pull" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
-margin_left = 481.0
-margin_right = 517.0
+margin_left = 447.0
+margin_right = 483.0
 margin_bottom = 32.0
 hint_tooltip = "Pull from the current branch's upstream"
 text = "Pull"
@@ -83,11 +88,101 @@ __meta__ = {
 }
 
 [node name="Push" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
-margin_left = 521.0
-margin_right = 564.0
+margin_left = 487.0
+margin_right = 530.0
 margin_bottom = 32.0
 hint_tooltip = "Push from the current branch to its upstream"
 text = "Push"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SpacerRight" type="Control" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
+margin_left = 534.0
+margin_right = 927.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+
+[node name="Settings" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
+margin_left = 931.0
+margin_right = 994.0
+margin_bottom = 32.0
+text = "Settings"
+
+[node name="SettingsPopup" type="AcceptDialog" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions/Settings"]
+visible = true
+margin_left = -620.0
+margin_top = 150.0
+margin_right = -300.0
+margin_bottom = 350.0
+rect_min_size = Vector2( 320, 200 )
+window_title = "Settings"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions/Settings/SettingsPopup"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = -8.0
+margin_bottom = -38.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DisplayedCommits" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions/Settings/SettingsPopup/VBoxContainer"]
+margin_right = 304.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 300, 24 )
+alignment = 1
+
+[node name="Label" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions/Settings/SettingsPopup/VBoxContainer/DisplayedCommits"]
+margin_top = 1.0
+margin_right = 220.0
+margin_bottom = 23.0
+size_flags_horizontal = 3
+text = "Displayed commits (per branch)"
+
+[node name="SpinBox" type="SpinBox" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions/Settings/SettingsPopup/VBoxContainer/DisplayedCommits"]
+margin_left = 224.0
+margin_right = 304.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 80, 0 )
+hint_tooltip = "A value of 0 will disable the Git history being displayed"
+max_value = 1000.0
+value = 100.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AutoHide" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions/Settings/SettingsPopup/VBoxContainer"]
+margin_top = 28.0
+margin_right = 304.0
+margin_bottom = 52.0
+rect_min_size = Vector2( 300, 24 )
+alignment = 1
+
+[node name="Label" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions/Settings/SettingsPopup/VBoxContainer/AutoHide"]
+margin_top = 1.0
+margin_right = 220.0
+margin_bottom = 23.0
+size_flags_horizontal = 3
+text = "Auto-hide panels"
+
+[node name="Panel" type="Panel" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions/Settings/SettingsPopup/VBoxContainer/AutoHide"]
+margin_left = 224.0
+margin_right = 304.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 80, 0 )
+
+[node name="SpinBox" type="CheckBox" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions/Settings/SettingsPopup/VBoxContainer/AutoHide/Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_min_size = Vector2( 80, 0 )
+pressed = true
+text = "On"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -179,3 +274,6 @@ __meta__ = {
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Fetch" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Fetch_pressed"]
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Pull" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Pull_pressed"]
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Push" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Push_pressed"]
+[connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Settings" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Settings_pressed"]
+[connection signal="value_changed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Settings/SettingsPopup/VBoxContainer/DisplayedCommits/SpinBox" to="ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory" method="_on_DisplayedCommitsAmount_value_changed"]
+[connection signal="toggled" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Settings/SettingsPopup/VBoxContainer/AutoHide/Panel/SpinBox" to="." method="_on_AutoHideDocks_toggled"]

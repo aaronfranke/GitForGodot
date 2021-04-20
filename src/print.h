@@ -56,3 +56,5 @@ void print4(godot_string p_string1, godot_string p_string2, godot_string p_strin
 	if (p_num_args != m_num_args) {          \
 		ERR("Invalid number of arguments."); \
 	}
+
+#define VERBOSE(m_text) print(cptos(m_text));

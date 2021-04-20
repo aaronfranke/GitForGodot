@@ -36,6 +36,7 @@ func _enter_tree():
 	commit_dock_instance.simple_native = simple_native
 	remote_dock_instance.simple_native = simple_native
 	staging_dock_instance.simple_native = simple_native
+	main_screen_instance.editor_plugin = self
 	branch_dock_instance.remote_dock = remote_dock_instance
 	commit_dock_instance.staging_dock = staging_dock_instance
 	remote_dock_instance.branch_dock = branch_dock_instance

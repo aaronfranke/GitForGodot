@@ -8,6 +8,7 @@ const COMMIT_DISPLAY_SCENE = preload("res://addons/git_for_godot/history_main_sc
 var auto_refresh_time = AUTO_REFRESH_DELAY
 var force_refresh := true
 
+var _displayed_commits := 100
 var _simple_native
 var _old_commit_dictionary
 var _branches_holder
@@ -32,7 +33,7 @@ func setup(simple_native):
 func check_for_update():
 	var commit_dictionary
 	if _simple_native and _simple_native.has_method("get_all_commits_dictionary"):
-		commit_dictionary = _simple_native.get_all_commits_dictionary(100)
+		commit_dictionary = _simple_native.get_all_commits_dictionary(_displayed_commits)
 	else:
 		return # TODO: Further investigation is needed. Why does it fail?
 
@@ -90,3 +91,7 @@ func update_status(commit_dictionary, force_refresh):
 			if child is preload("res://addons/git_for_godot/history_main_screen/commit_display.gd") and branch_head_hash == child.commit_hash:
 				branch_display.commit = child
 				continue
+
+
+func _on_DisplayedCommitsAmount_value_changed(value):
+	_displayed_commits = int(value)
