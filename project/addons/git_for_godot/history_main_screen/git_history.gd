@@ -1,15 +1,15 @@
 tool
 extends HSplitContainer
 
-const AUTO_REFRESH_DELAY = 0.2
 const BRANCH_DISPLAY_SCENE = preload("res://addons/git_for_godot/history_main_screen/branch_display.tscn")
 const COMMIT_DISPLAY_SCENE = preload("res://addons/git_for_godot/history_main_screen/commit_display.tscn")
 
-var auto_refresh_time = AUTO_REFRESH_DELAY
+var auto_refresh_time := 0.5
 var force_refresh := true
 
 var _displayed_commits := 100
 var _simple_native
+var _dock_manager
 var _old_commit_dictionary
 var _branches_holder
 var _names_vbox
@@ -19,12 +19,13 @@ var _wip_node
 func _process(delta):
 	auto_refresh_time -= delta
 	if force_refresh or auto_refresh_time < 0.0:
-		auto_refresh_time += AUTO_REFRESH_DELAY
+		auto_refresh_time += _dock_manager.auto_refresh_status_delay
 		check_for_update()
 
 
-func setup(simple_native):
+func setup(simple_native, dock_manager):
 	_simple_native = simple_native
+	_dock_manager = dock_manager
 	_branches_holder = $Branches
 	_names_vbox = $Commits/Names
 	_wip_node = _names_vbox.get_child(0)

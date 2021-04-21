@@ -1,4 +1,6 @@
 
+# Note: Only the *.dll files need to exist when shipping to users.
+# The *.exp and *.lib files are compilation artifacts, not needed at runtime.
 *.dll
 *.exp
 *.lib

@@ -1,10 +1,12 @@
 
-[System.IO.Directory]::CreateDirectory("libgit2/build")
+mkdir -Force "libgit2/build"
 Set-Location libgit2/build
-cmake ..
+cmake -DCMAKE_OPTIONS=-A amd64 ..
 cmake --build .
 
 Set-Location ../..
 
-Remove-Item -Force project/addons/git_for_godot/gdnative/windows/*.lib
-Copy-Item libgit2/build/Debug/*.lib project/addons/git_for_godot/gdnative/windows/
+Remove-Item -Force project/addons/git_for_godot/gdnative/windows/git2.lib
+Remove-Item -Force project/addons/git_for_godot/gdnative/windows/git2.dll
+Copy-Item libgit2/build/Debug/git2.lib project/addons/git_for_godot/gdnative/windows/
+Copy-Item libgit2/build/Debug/git2.dll project/addons/git_for_godot/gdnative/windows/
