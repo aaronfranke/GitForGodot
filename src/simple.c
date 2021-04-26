@@ -339,7 +339,7 @@ INSTANCE_METHOD(commit) {
 	print(itos(p_num_args));
 	godot_bool amend = api->godot_variant_as_bool(p_args[0]);
 	// Parse the commit message.
-	godot_string newline = cptos("\n");
+	godot_string newline = cptos("\n\n");
 	godot_string name = api->godot_variant_as_string(p_args[1]);
 	godot_string desc = api->godot_variant_as_string(p_args[2]);
 	godot_string message_str = api->godot_string_operator_plus(&name, &newline);
