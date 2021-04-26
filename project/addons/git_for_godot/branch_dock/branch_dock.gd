@@ -26,7 +26,12 @@ func _process(delta):
 	# Validate branch name each frame and disable the create button if invalid.
 	if _regex and _new_branch_name:
 		var result = _regex.search_all("refs/heads/" + _new_branch_name.text)
-		_new_branch_button.disabled = result.empty() or (_new_branch_name.text in _old_branch_dictionary.keys())
+		var invalid: bool = result.empty() or (_new_branch_name.text in _old_branch_dictionary.keys())
+		_new_branch_button.disabled = invalid
+		if invalid and not _new_branch_name.text.empty():
+			_new_branch_name.add_color_override("font_color", Color(1, 0.5, 0.5))
+		else:
+			_new_branch_name.add_color_override("font_color", Color.white)
 	auto_refresh_time -= delta
 	if force_refresh or auto_refresh_time < 0.0:
 		auto_refresh_time += AUTO_REFRESH_DELAY
