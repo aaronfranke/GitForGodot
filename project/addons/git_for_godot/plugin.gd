@@ -18,6 +18,7 @@ var staging_dock_instance
 var instances
 
 var auto_hide_docks := true
+var auto_show_docks := true
 
 
 func _enter_tree():
@@ -84,6 +85,10 @@ func make_visible(visible):
 func try_add_control_to_dock(slot, dock):
 	if dock:
 		add_control_to_dock(slot, dock)
+		if auto_show_docks:
+			yield(get_tree(), "idle_frame")
+			var parent: TabContainer = dock.get_parent()
+			parent.current_tab = dock.get_position_in_parent()
 	else:
 		printerr("Dock is null, this should never happen! If you can figure out what causes this, please report a bug or open a PR.")
 
