@@ -1,7 +1,7 @@
 tool
 extends Control
 
-const REMOTE_BRANCH_SCENE = preload("res://addons/git_for_godot/remote_dock/remote_branch.tscn")
+const REMOTE_BRANCH_SCENE = preload("res://addons/git_for_godot/docks/remote_dock/remote_branch.tscn")
 
 # These are set in setup.
 var _simple_native

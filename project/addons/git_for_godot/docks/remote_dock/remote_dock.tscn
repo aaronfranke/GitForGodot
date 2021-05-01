@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://addons/git_for_godot/theme.tres" type="Theme" id=1]
-[ext_resource path="res://addons/git_for_godot/remote_dock/remote_dock.gd" type="Script" id=2]
+[ext_resource path="res://addons/git_for_godot/docks/remote_dock/remote_dock.gd" type="Script" id=2]
 
 [node name="Remote" type="VBoxContainer"]
 anchor_right = 1.0

@@ -1,7 +1,7 @@
 tool
 extends HSplitContainer
 
-const AUTO_REFRESH_DELAY = 2.0
+const AUTO_REFRESH_DELAY = 0.2
 const BRANCH_DISPLAY_SCENE = preload("res://addons/git_for_godot/history_main_screen/branch_display.tscn")
 const COMMIT_DISPLAY_SCENE = preload("res://addons/git_for_godot/history_main_screen/commit_display.tscn")
 

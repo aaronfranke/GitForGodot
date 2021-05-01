@@ -3,7 +3,10 @@
 [ext_resource path="res://addons/git_for_godot/history_main_screen/settings_popup.gd" type="Script" id=1]
 
 [node name="SettingsPopup" type="AcceptDialog"]
-rect_min_size = Vector2( 320, 200 )
+visible = true
+margin_right = 400.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 400, 200 )
 window_title = "Settings"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -22,51 +25,110 @@ __meta__ = {
 }
 
 [node name="DisplayedCommits" type="HBoxContainer" parent="VBoxContainer"]
-margin_right = 304.0
+margin_right = 384.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 300, 24 )
+hint_tooltip = "A value of 0 will disable the Git history being displayed.
+Warning: Large values are bad for slow computers.
+Each commit in the displayed history will take about 10 microseconds
+when polling and about 3 milliseconds when updating the UI."
 alignment = 1
 
 [node name="Label" type="Label" parent="VBoxContainer/DisplayedCommits"]
 margin_top = 5.0
-margin_right = 220.0
+margin_right = 300.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "Displayed commits (per branch)"
 
 [node name="SpinBox" type="SpinBox" parent="VBoxContainer/DisplayedCommits"]
-margin_left = 224.0
-margin_right = 304.0
+margin_left = 304.0
+margin_right = 384.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 80, 0 )
-hint_tooltip = "A value of 0 will disable the Git history being displayed"
 max_value = 1000.0
 value = 100.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="AutoHide" type="HBoxContainer" parent="VBoxContainer"]
+[node name="AutoRefreshStatusDelay" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 28.0
-margin_right = 304.0
+margin_right = 384.0
 margin_bottom = 52.0
+rect_min_size = Vector2( 300, 24 )
+hint_tooltip = "A value of 0 will disable automatic refreshing (polling the status from Git).
+Warning: Small values are terrible for slow computers!"
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer/AutoRefreshStatusDelay"]
+margin_top = 5.0
+margin_right = 300.0
+margin_bottom = 19.0
+size_flags_horizontal = 3
+text = "Auto-refresh status delay (in seconds)"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/AutoRefreshStatusDelay"]
+margin_left = 304.0
+margin_right = 384.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 80, 0 )
+max_value = 10.0
+step = 0.2
+value = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AutoFetchDelay" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 56.0
+margin_right = 384.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 300, 24 )
+hint_tooltip = "A value of 0 will disable automatic fetching.
+Warning: Small values are terrible for slow Internet connections!"
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer/AutoFetchDelay"]
+margin_top = 5.0
+margin_right = 300.0
+margin_bottom = 19.0
+size_flags_horizontal = 3
+text = "Auto-fetch delay (in seconds)"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/AutoFetchDelay"]
+margin_left = 304.0
+margin_right = 384.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 80, 0 )
+max_value = 3600.0
+step = 10.0
+value = 60.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AutoHideDocks" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 84.0
+margin_right = 384.0
+margin_bottom = 108.0
 rect_min_size = Vector2( 300, 24 )
 alignment = 1
 
-[node name="Label" type="Label" parent="VBoxContainer/AutoHide"]
+[node name="Label" type="Label" parent="VBoxContainer/AutoHideDocks"]
 margin_top = 5.0
-margin_right = 220.0
+margin_right = 300.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
-text = "Auto-hide panels on switching"
+text = "Auto-hide docks on switching"
 
-[node name="Panel" type="Panel" parent="VBoxContainer/AutoHide"]
-margin_left = 224.0
-margin_right = 304.0
+[node name="Panel" type="Panel" parent="VBoxContainer/AutoHideDocks"]
+margin_left = 304.0
+margin_right = 384.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 80, 0 )
 
-[node name="CheckBox" type="CheckBox" parent="VBoxContainer/AutoHide/Panel"]
+[node name="CheckBox" type="CheckBox" parent="VBoxContainer/AutoHideDocks/Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 rect_min_size = Vector2( 80, 0 )
@@ -76,14 +138,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="AutoShow" type="HBoxContainer" parent="VBoxContainer"]
-margin_top = 56.0
-margin_right = 304.0
-margin_bottom = 80.0
+[node name="AutoShowDocks" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 112.0
+margin_right = 384.0
+margin_bottom = 136.0
 rect_min_size = Vector2( 300, 24 )
 alignment = 1
 
-[node name="Spacer" type="Control" parent="VBoxContainer/AutoShow"]
+[node name="Spacer" type="Control" parent="VBoxContainer/AutoShowDocks"]
 margin_right = 24.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 24, 0 )
@@ -91,21 +153,21 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Label" type="Label" parent="VBoxContainer/AutoShow"]
+[node name="Label" type="Label" parent="VBoxContainer/AutoShowDocks"]
 margin_left = 28.0
 margin_top = 5.0
-margin_right = 220.0
+margin_right = 300.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
-text = "Also auto-show panels"
+text = "Also auto-show docks"
 
-[node name="Panel" type="Panel" parent="VBoxContainer/AutoShow"]
-margin_left = 224.0
-margin_right = 304.0
+[node name="Panel" type="Panel" parent="VBoxContainer/AutoShowDocks"]
+margin_left = 304.0
+margin_right = 384.0
 margin_bottom = 24.0
 rect_min_size = Vector2( 80, 0 )
 
-[node name="CheckBox" type="CheckBox" parent="VBoxContainer/AutoShow/Panel"]
+[node name="CheckBox" type="CheckBox" parent="VBoxContainer/AutoShowDocks/Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 rect_min_size = Vector2( 80, 0 )
@@ -114,6 +176,9 @@ text = "On"
 __meta__ = {
 "_edit_use_anchors_": false
 }
-[connection signal="confirmed" from="." to="VBoxContainer" method="_on_SettingsPopup_confirmed"]
-[connection signal="toggled" from="VBoxContainer/AutoHide/Panel/CheckBox" to="VBoxContainer" method="_on_AutoHide_toggled"]
-[connection signal="toggled" from="VBoxContainer/AutoShow/Panel/CheckBox" to="VBoxContainer" method="_on_AutoShow_toggled"]
+[connection signal="confirmed" from="." to="VBoxContainer" method="save"]
+[connection signal="changed" from="VBoxContainer/DisplayedCommits/SpinBox" to="VBoxContainer" method="save"]
+[connection signal="changed" from="VBoxContainer/AutoRefreshStatusDelay/SpinBox" to="VBoxContainer" method="save"]
+[connection signal="changed" from="VBoxContainer/AutoFetchDelay/SpinBox" to="VBoxContainer" method="save"]
+[connection signal="pressed" from="VBoxContainer/AutoHideDocks/Panel/CheckBox" to="VBoxContainer" method="save"]
+[connection signal="pressed" from="VBoxContainer/AutoShowDocks/Panel/CheckBox" to="VBoxContainer" method="save"]

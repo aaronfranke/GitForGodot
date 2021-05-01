@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://addons/git_for_godot/history_main_screen/git_history.gd" type="Script" id=1]
 [ext_resource path="res://addons/git_for_godot/icons/Modify.svg" type="Texture" id=2]
@@ -6,6 +6,8 @@
 [ext_resource path="res://addons/git_for_godot/history_main_screen/history_main_screen.gd" type="Script" id=4]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/settings_popup.tscn" type="PackedScene" id=5]
 [ext_resource path="res://addons/git_for_godot/history_main_screen/basic_actions.gd" type="Script" id=6]
+[ext_resource path="res://addons/git_for_godot/docks/dock_manager.gd" type="Script" id=7]
+
 
 [node name="HistoryMainScreen" type="MarginContainer"]
 anchor_right = 1.0
@@ -63,14 +65,25 @@ size_flags_horizontal = 3
 alignment = 1
 script = ExtResource( 6 )
 
+[node name="Refresh" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
+margin_right = 60.0
+margin_bottom = 32.0
+hint_tooltip = "Refresh the status (similar to doing git status).
+Automatic refreshing is configurable in the settings."
+text = "Refresh"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="SpacerLeft" type="Control" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
-margin_right = 392.0
+margin_left = 64.0
+margin_right = 424.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
 
 [node name="Fetch" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
-margin_left = 396.0
-margin_right = 443.0
+margin_left = 428.0
+margin_right = 475.0
 margin_bottom = 32.0
 hint_tooltip = "Fetch from all remotes"
 text = "Fetch"
@@ -79,8 +92,8 @@ __meta__ = {
 }
 
 [node name="Pull" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
-margin_left = 447.0
-margin_right = 483.0
+margin_left = 479.0
+margin_right = 515.0
 margin_bottom = 32.0
 hint_tooltip = "Pull from the current branch's upstream"
 text = "Pull"
@@ -89,8 +102,8 @@ __meta__ = {
 }
 
 [node name="Push" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
-margin_left = 487.0
-margin_right = 530.0
+margin_left = 519.0
+margin_right = 562.0
 margin_bottom = 32.0
 hint_tooltip = "Push from the current branch to its upstream"
 text = "Push"
@@ -99,7 +112,7 @@ __meta__ = {
 }
 
 [node name="SpacerRight" type="Control" parent="ColorRect/MarginContainer/VBoxContainer/BasicActions"]
-margin_left = 534.0
+margin_left = 566.0
 margin_right = 927.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
@@ -196,6 +209,10 @@ text = "Error"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="DockManager" type="Node" parent="."]
+script = ExtResource( 7 )
+[connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Refresh" to="DockManager" method="refresh"]
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Fetch" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Fetch_pressed"]
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Pull" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Pull_pressed"]
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Push" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Push_pressed"]

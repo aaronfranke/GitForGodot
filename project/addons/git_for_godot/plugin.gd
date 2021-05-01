@@ -4,10 +4,10 @@ extends EditorPlugin
 
 const SimpleNative = preload("res://addons/git_for_godot/gdnative/simple.gdns")
 const MainScreen = preload("res://addons/git_for_godot/history_main_screen/history_main_screen.tscn")
-const BranchDock = preload("res://addons/git_for_godot/branch_dock/branch_dock.tscn")
-const CommitDock = preload("res://addons/git_for_godot/commit_dock/commit_dock.tscn")
-const RemoteDock = preload("res://addons/git_for_godot/remote_dock/remote_dock.tscn")
-const StagingDock = preload("res://addons/git_for_godot/staging_dock/staging_dock.tscn")
+const BranchDock = preload("res://addons/git_for_godot/docks/branch_dock/branch_dock.tscn")
+const CommitDock = preload("res://addons/git_for_godot/docks/commit_dock/commit_dock.tscn")
+const RemoteDock = preload("res://addons/git_for_godot/docks/remote_dock/remote_dock.tscn")
+const StagingDock = preload("res://addons/git_for_godot/docks/staging_dock/staging_dock.tscn")
 
 var simple_native
 var main_screen_instance
@@ -32,18 +32,8 @@ func _enter_tree():
 	instances = [main_screen_instance, branch_dock_instance, commit_dock_instance, remote_dock_instance, staging_dock_instance]
 
 	# Set scene variables.
-	main_screen_instance.simple_native = simple_native
-	branch_dock_instance.simple_native = simple_native
-	commit_dock_instance.simple_native = simple_native
-	remote_dock_instance.simple_native = simple_native
-	staging_dock_instance.simple_native = simple_native
-	main_screen_instance.editor_plugin = self
-	branch_dock_instance.remote_dock = remote_dock_instance
-	commit_dock_instance.staging_dock = staging_dock_instance
-	remote_dock_instance.branch_dock = branch_dock_instance
-	staging_dock_instance.commit_dock = commit_dock_instance
-	var wip = main_screen_instance.get_node(@"ColorRect/MarginContainer/VBoxContainer/ScrollContainer/GitHistory/Commits/Names/WIP")
-	commit_dock_instance.get_node(@"VBoxContainer/StageStatus").wip_node = wip
+	main_screen_instance.setup(self, simple_native, branch_dock_instance, commit_dock_instance, remote_dock_instance, staging_dock_instance)
+
 	# Add the main panel to the editor's main viewport.
 	get_editor_interface().get_editor_viewport().add_child(main_screen_instance)
 	if not auto_hide_docks:
@@ -83,14 +73,15 @@ func make_visible(visible):
 
 
 func try_add_control_to_dock(slot, dock):
-	if dock:
-		add_control_to_dock(slot, dock)
-		if auto_show_docks:
-			yield(get_tree(), "idle_frame")
-			var parent: TabContainer = dock.get_parent()
-			parent.current_tab = dock.get_position_in_parent()
-	else:
+	if not dock:
 		printerr("Dock is null, this should never happen! If you can figure out what causes this, please report a bug or open a PR.")
+		return
+
+	add_control_to_dock(slot, dock)
+	if auto_show_docks:
+		yield(get_tree(), "idle_frame")
+		var parent: TabContainer = dock.get_parent()
+		parent.current_tab = dock.get_position_in_parent()
 
 
 func try_remove_control_from_docks(dock):

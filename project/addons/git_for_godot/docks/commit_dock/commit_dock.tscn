@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://addons/git_for_godot/commit_dock/commit_dock.gd" type="Script" id=1]
-[ext_resource path="res://addons/git_for_godot/theme.tres" type="Theme" id=2]
-[ext_resource path="res://addons/git_for_godot/commit_dock/stage_status.gd" type="Script" id=3]
+[ext_resource path="res://addons/git_for_godot/theme.tres" type="Theme" id=1]
+[ext_resource path="res://addons/git_for_godot/docks/commit_dock/stage_status.gd" type="Script" id=2]
+[ext_resource path="res://addons/git_for_godot/docks/commit_dock/commit_dock.gd" type="Script" id=3]
 
 [node name="Commit" type="Control"]
 anchor_right = 1.0
@@ -10,8 +10,8 @@ anchor_bottom = 1.0
 margin_right = -724.0
 margin_bottom = -400.0
 rect_min_size = Vector2( 320, 200 )
-theme = ExtResource( 2 )
-script = ExtResource( 1 )
+theme = ExtResource( 1 )
+script = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -29,7 +29,7 @@ margin_right = 320.0
 margin_bottom = 22.0
 text = "No changes, working tree clean."
 clip_text = true
-script = ExtResource( 3 )
+script = ExtResource( 2 )
 
 [node name="StageManagement" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 26.0

@@ -3,6 +3,7 @@ extends Control
 
 # These are set in setup.
 var _simple_native
+var _dock_manager
 var _branch_name: String
 var _branch_dock: Control
 var _rename_popup: ConfirmationDialog
@@ -26,8 +27,9 @@ func _process(_delta):
 		_rename_ok.disabled = result.empty()
 
 
-func setup(simple_native, branch_dock, regex, branch_name, branch_type):
+func setup(simple_native, dock_manager, branch_dock, regex, branch_name, branch_type):
 	_simple_native = simple_native
+	_dock_manager = dock_manager
 	_branch_dock = branch_dock
 	_branch_name = branch_name
 	name = branch_name
@@ -68,6 +70,7 @@ func setup(simple_native, branch_dock, regex, branch_name, branch_type):
 
 func _on_Checkout_pressed():
 	_simple_native.checkout_branch(name)
+	_dock_manager.force_refresh = true
 
 
 func _on_Menu_pressed():
@@ -90,13 +93,13 @@ func _on_RenamePopup_confirmed():
 	if not result.empty():
 		_simple_native.rename_branch(_branch_name, _rename_name.text)
 		# Make the branch and remote docks refresh next frame.
-		_branch_dock.force_refresh = true
+		_dock_manager.force_refresh = true
 
 
 func _on_DeletePopup_confirmed():
 	_simple_native.delete_branch(_branch_name)
 	# Make the branch and remote docks refresh next frame.
-	_branch_dock.force_refresh = true
+	_dock_manager.force_refresh = true
 
 
 func _on_UpstreamPopup_confirmed():
@@ -104,4 +107,4 @@ func _on_UpstreamPopup_confirmed():
 	upstream_branch_name += "/" + _upstream_branch.text
 	_simple_native.set_upstream_branch(_branch_name, upstream_branch_name)
 	# Make the branch and remote docks refresh next frame.
-	_branch_dock.force_refresh = true
+	_dock_manager.force_refresh = true

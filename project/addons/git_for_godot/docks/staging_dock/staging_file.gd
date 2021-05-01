@@ -1,13 +1,16 @@
 tool
 extends Control
 
-var simple_native
+var _simple_native
+var _dock_manager
 var _name
 
 
-func setup(name, status):
-	_name = name
-	$Label.text = name
+func setup(simple_native, dock_manager, file_name, status):
+	_simple_native = simple_native
+	_dock_manager = dock_manager
+	_name = file_name
+	$Label.text = file_name
 
 	if status & LibGit2Defines.GIT_STATUS_ANY_NEW:
 		$TextureRect.texture = load("res://addons/git_for_godot/icons/Add.svg")
@@ -25,4 +28,5 @@ func setup(name, status):
 
 
 func _on_Button_pressed():
-	simple_native.stage_one(_name)
+	_simple_native.stage_one(_name)
+	_dock_manager.force_refresh = true
