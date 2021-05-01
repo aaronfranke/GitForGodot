@@ -217,6 +217,7 @@ INSTANCE_METHOD(get_data) {
 
 INSTANCE_METHOD(get_status) {
 	VERBOSE("get_status");
+	CHECK_ARG_COUNT(0);
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
@@ -257,6 +258,7 @@ INSTANCE_METHOD(get_status) {
 
 INSTANCE_METHOD(stage_one) {
 	VERBOSE("stage_one");
+	CHECK_ARG_COUNT(1);
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
@@ -283,6 +285,7 @@ INSTANCE_METHOD(stage_one) {
 
 INSTANCE_METHOD(stage_all) {
 	VERBOSE("stage_all");
+	CHECK_ARG_COUNT(0);
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
@@ -302,6 +305,7 @@ INSTANCE_METHOD(stage_all) {
 
 INSTANCE_METHOD(unstage_all) {
 	VERBOSE("unstage_all");
+	CHECK_ARG_COUNT(0);
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
@@ -323,6 +327,7 @@ INSTANCE_METHOD(unstage_all) {
 
 INSTANCE_METHOD(discard_unstaged) {
 	VERBOSE("discard_unstaged");
+	CHECK_ARG_COUNT(0);
 	validate_git_repo_is_initialized();
 	// Force-checkout from the index to discard unstaged changes.
 	git_checkout_options opt = GIT_CHECKOUT_OPTIONS_INIT;
@@ -332,11 +337,11 @@ INSTANCE_METHOD(discard_unstaged) {
 
 INSTANCE_METHOD(commit) {
 	VERBOSE("commit");
+	CHECK_ARG_COUNT(3);
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
 	git_repository_index(&index, repo);
-	print(itos(p_num_args));
 	godot_bool amend = api->godot_variant_as_bool(p_args[0]);
 	// Parse the commit message.
 	godot_string newline = cptos("\n\n");
@@ -398,6 +403,7 @@ INSTANCE_METHOD(commit) {
 
 INSTANCE_METHOD(get_head_message) {
 	VERBOSE("get_head_message");
+	CHECK_ARG_COUNT(0);
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
@@ -446,6 +452,7 @@ INSTANCE_METHOD(get_head_message) {
 
 INSTANCE_METHOD(get_branch_list) {
 	VERBOSE("get_branch_list");
+	CHECK_ARG_COUNT(0);
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
@@ -491,6 +498,7 @@ INSTANCE_METHOD(get_branch_list) {
 
 INSTANCE_METHOD(get_remote_list) {
 	VERBOSE("get_remote_list");
+	CHECK_ARG_COUNT(0);
 	validate_git_repo_is_initialized();
 	// Get a list of remotes.
 	git_strarray remotes_git_strarray;
@@ -517,7 +525,7 @@ INSTANCE_METHOD(get_remote_list) {
 
 INSTANCE_METHOD(get_all_commits_dictionary) {
 	VERBOSE("get_all_commits_dictionary");
-	ERR_ARGC(1);
+	CHECK_ARG_COUNT(1);
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
@@ -619,6 +627,7 @@ INSTANCE_METHOD(get_all_commits_dictionary) {
 
 INSTANCE_METHOD(checkout_branch) {
 	VERBOSE("checkout_branch");
+	CHECK_ARG_COUNT(1);
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
@@ -645,6 +654,7 @@ INSTANCE_METHOD(checkout_branch) {
 
 INSTANCE_METHOD(create_branch) {
 	VERBOSE("create_branch");
+	CHECK_ARG_COUNT(1);
 	validate_git_repo_is_initialized();
 	// Parse the branch name.
 	godot_string branch_str = api->godot_variant_as_string(p_args[0]);
@@ -667,6 +677,7 @@ INSTANCE_METHOD(create_branch) {
 
 INSTANCE_METHOD(rename_branch) {
 	VERBOSE("rename_branch");
+	CHECK_ARG_COUNT(2);
 	validate_git_repo_is_initialized();
 	// Parse the old branch name.
 	godot_string old_branch_str = api->godot_variant_as_string(p_args[0]);
@@ -693,6 +704,7 @@ INSTANCE_METHOD(rename_branch) {
 
 INSTANCE_METHOD(delete_branch) {
 	VERBOSE("delete_branch");
+	CHECK_ARG_COUNT(1);
 	validate_git_repo_is_initialized();
 	// Parse the branch name.
 	godot_string branch_str = api->godot_variant_as_string(p_args[0]);
@@ -711,6 +723,7 @@ INSTANCE_METHOD(delete_branch) {
 
 INSTANCE_METHOD(get_upstream_branch) {
 	VERBOSE("get_upstream_branch");
+	CHECK_ARG_COUNT(1);
 	validate_git_repo_is_initialized();
 	// Parse the branch name.
 	godot_string branch_str = api->godot_variant_as_string(p_args[0]);
@@ -743,6 +756,7 @@ INSTANCE_METHOD(get_upstream_branch) {
 
 INSTANCE_METHOD(set_upstream_branch) {
 	VERBOSE("set_upstream_branch");
+	CHECK_ARG_COUNT(2);
 	validate_git_repo_is_initialized();
 	// Parse the local branch name.
 	godot_string local_branch_str = api->godot_variant_as_string(p_args[0]);
@@ -769,6 +783,7 @@ INSTANCE_METHOD(set_upstream_branch) {
 
 INSTANCE_METHOD(add_remote) {
 	VERBOSE("add_remote");
+	CHECK_ARG_COUNT(2);
 	validate_git_repo_is_initialized();
 	// Parse the remote name an.
 	godot_string remote_name_str = api->godot_variant_as_string(p_args[0]);
@@ -790,6 +805,7 @@ INSTANCE_METHOD(add_remote) {
 
 INSTANCE_METHOD(delete_remote) {
 	VERBOSE("delete_remote");
+	CHECK_ARG_COUNT(1);
 	validate_git_repo_is_initialized();
 	// Parse the remote name.
 	godot_string remote_name_str = api->godot_variant_as_string(p_args[0]);
@@ -804,6 +820,7 @@ INSTANCE_METHOD(delete_remote) {
 
 INSTANCE_METHOD(rename_remote) {
 	VERBOSE("rename_remote");
+	CHECK_ARG_COUNT(2);
 	validate_git_repo_is_initialized();
 	// Parse the remote names.
 	godot_string old_remote_name_str = api->godot_variant_as_string(p_args[0]);
@@ -825,6 +842,7 @@ INSTANCE_METHOD(rename_remote) {
 
 INSTANCE_METHOD(fetch_all) {
 	VERBOSE("fetch_all");
+	CHECK_ARG_COUNT(0);
 	validate_git_repo_is_initialized();
 	// Get the remotes.
 	godot_variant remote_list = INSTANCE_METHOD_CALL(get_remote_list, 0, NULL);
@@ -844,6 +862,7 @@ INSTANCE_METHOD(fetch_all) {
 
 INSTANCE_METHOD(fetch_one) {
 	VERBOSE("fetch_one");
+	CHECK_ARG_COUNT(1);
 	validate_git_repo_is_initialized();
 	// Parse the remote name.
 	godot_string remote_name_str = api->godot_variant_as_string(p_args[0]);
@@ -862,6 +881,7 @@ INSTANCE_METHOD(fetch_one) {
 
 INSTANCE_METHOD(pull) {
 	VERBOSE("pull");
+	CHECK_ARG_COUNT(0);
 	validate_git_repo_is_initialized();
 	//
 	// Clean up memory.
@@ -869,6 +889,7 @@ INSTANCE_METHOD(pull) {
 
 INSTANCE_METHOD(push) {
 	VERBOSE("push");
+	CHECK_ARG_COUNT(0);
 	validate_git_repo_is_initialized();
 	// Get the currently checked out branch.
 	git_branch_iterator *iterator;

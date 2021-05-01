@@ -52,9 +52,9 @@ void print4(godot_string p_string1, godot_string p_string2, godot_string p_strin
 
 // Error macros.
 #define ERR(m_err) api->godot_print_error(m_err, __FUNCTION__, __FILE__, __LINE__);
-#define ERR_ARGC(m_num_args)                 \
-	if (p_num_args != m_num_args) {          \
-		ERR("Invalid number of arguments."); \
+#define CHECK_ARG_COUNT(m_num_args)                                    \
+	if (p_num_args != m_num_args) {                                    \
+		ERR("Invalid number of arguments, expected " #m_num_args "."); \
 	}
 
 #define VERBOSE(m_text) //print(cptos(m_text));
