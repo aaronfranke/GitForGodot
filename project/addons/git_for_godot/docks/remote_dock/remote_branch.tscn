@@ -57,5 +57,6 @@ stretch_mode = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
 [connection signal="pressed" from="Checkout" to="." method="_on_Checkout_pressed"]
 [connection signal="pressed" from="Menu" to="." method="_on_Menu_pressed"]

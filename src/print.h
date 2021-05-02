@@ -7,12 +7,7 @@ godot_string itos(const int64_t p_value) {
 }
 
 // Char pointer to string.
-godot_string cptos(const char *p_string) {
-	godot_string s;
-	api->godot_string_new(&s);
-	api->godot_string_parse_utf8(&s, p_string);
-	return s;
-}
+#define cptos(m_chars) api->godot_string_chars_to_utf8(m_chars)
 
 // String to char string.
 godot_char_string stocs(godot_string *p_str) {

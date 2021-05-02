@@ -82,5 +82,6 @@ placeholder_text = "Remote URL"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
 [connection signal="pressed" from="NewRemote/CreateButton" to="." method="_on_CreateButton_pressed"]
 [connection signal="confirmed" from="NewRemote/CreateButton/CreatePopup" to="." method="_on_CreatePopup_confirmed"]

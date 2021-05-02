@@ -100,6 +100,7 @@ dialog_text = "Not yet implemented"
 margin_top = 32.0
 margin_right = 180.0
 margin_bottom = 32.0
+
 [connection signal="pressed" from="RemoteDetails/Icon" to="." method="_on_Icon_pressed"]
 [connection signal="pressed" from="RemoteDetails/Menu" to="." method="_on_Menu_pressed"]
 [connection signal="id_pressed" from="RemoteDetails/PopupMenu" to="." method="_on_PopupMenu_id_pressed"]

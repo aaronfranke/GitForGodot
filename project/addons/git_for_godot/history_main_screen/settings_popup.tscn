@@ -3,7 +3,6 @@
 [ext_resource path="res://addons/git_for_godot/history_main_screen/settings_popup.gd" type="Script" id=1]
 
 [node name="SettingsPopup" type="AcceptDialog"]
-visible = true
 margin_right = 400.0
 margin_bottom = 200.0
 rect_min_size = Vector2( 400, 200 )
@@ -176,6 +175,7 @@ text = "On"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
 [connection signal="confirmed" from="." to="VBoxContainer" method="save"]
 [connection signal="changed" from="VBoxContainer/DisplayedCommits/SpinBox" to="VBoxContainer" method="save"]
 [connection signal="changed" from="VBoxContainer/AutoRefreshStatusDelay/SpinBox" to="VBoxContainer" method="save"]

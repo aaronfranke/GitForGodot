@@ -25,9 +25,15 @@ void validate_git_repo_is_initialized() {
 	{
 		godot_object *ps_singleton = api->godot_global_get_singleton("ProjectSettings");
 		godot_method_bind *ps_globalize_path = api->godot_method_bind_get_method("ProjectSettings", "globalize_path");
-		godot_string res = cptos("res://");
-		const void *args[] = { (void *)&res };
-		api->godot_method_bind_ptrcall(ps_globalize_path, ps_singleton, args, &globalized_path_string);
+		godot_string res_string = cptos("res://");
+		godot_variant res_variant;
+		api->godot_variant_new_string(&res_variant, &res_string);
+		const godot_variant *args[] = { &res_variant };
+		godot_variant globalized_path_variant = api->godot_method_bind_call(ps_globalize_path, ps_singleton, args, 1, NULL);
+		globalized_path_string = api->godot_variant_as_string(&globalized_path_variant);
+		api->godot_string_destroy(&res_string);
+		api->godot_variant_destroy(&res_variant);
+		api->godot_variant_destroy(&globalized_path_variant);
 	}
 	godot_class_constructor directory_constructor = api->godot_get_class_constructor("_Directory");
 	godot_object *directory = directory_constructor();

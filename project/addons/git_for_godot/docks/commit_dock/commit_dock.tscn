@@ -93,6 +93,7 @@ rect_min_size = Vector2( 0, 30 )
 margin_right = 242.0
 margin_bottom = 30.0
 size_flags_horizontal = 3
+disabled = true
 text = "Commit changes"
 
 [node name="Amend" type="CheckBox" parent="VBoxContainer/CommitButtons"]
@@ -100,6 +101,7 @@ margin_left = 246.0
 margin_right = 320.0
 margin_bottom = 30.0
 text = "Amend"
+
 [connection signal="pressed" from="VBoxContainer/StageManagement/Stage" to="." method="_on_Stage_pressed"]
 [connection signal="pressed" from="VBoxContainer/StageManagement/Unstage" to="." method="_on_Unstage_pressed"]
 [connection signal="pressed" from="VBoxContainer/StageManagement/Discard" to="." method="_on_Discard_pressed"]

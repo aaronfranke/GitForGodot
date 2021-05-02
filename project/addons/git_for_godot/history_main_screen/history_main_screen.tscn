@@ -8,7 +8,6 @@
 [ext_resource path="res://addons/git_for_godot/history_main_screen/basic_actions.gd" type="Script" id=6]
 [ext_resource path="res://addons/git_for_godot/docks/dock_manager.gd" type="Script" id=7]
 
-
 [node name="HistoryMainScreen" type="MarginContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -212,6 +211,7 @@ __meta__ = {
 
 [node name="DockManager" type="Node" parent="."]
 script = ExtResource( 7 )
+
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Refresh" to="DockManager" method="refresh"]
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Fetch" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Fetch_pressed"]
 [connection signal="pressed" from="ColorRect/MarginContainer/VBoxContainer/BasicActions/Pull" to="ColorRect/MarginContainer/VBoxContainer/BasicActions" method="_on_Pull_pressed"]

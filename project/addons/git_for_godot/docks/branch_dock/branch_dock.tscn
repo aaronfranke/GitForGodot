@@ -54,4 +54,5 @@ hint_tooltip = "Create a new branch on top
 of the checked out branch."
 disabled = true
 text = "Create"
+
 [connection signal="pressed" from="NewBranch/CreateButton" to="." method="_on_CreateButton_pressed"]
