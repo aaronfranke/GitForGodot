@@ -7,8 +7,6 @@ var _simple_native
 var _dock_manager
 var _commit_dock_status_label
 
-var _old_status_dictionary
-
 var staged_file_count_label: Label
 var unstaged_file_count_label: Label
 var staged_files_vbox: VBoxContainer
@@ -25,16 +23,7 @@ func setup(simple_native, dock_manager, commit_dock):
 	unstaged_files_vbox = get_child(0).get_node(@"UnstagedFiles/ScrollContainer/VBoxContainer")
 
 
-func update_status():
-	var status_dictionary
-	if _simple_native and _simple_native.has_method("get_status"):
-		status_dictionary = _simple_native.get_status()
-	else:
-		return # TODO: Further investigation is needed. Why does it fail?
-	if _old_status_dictionary:
-		if status_dictionary.hash() == _old_status_dictionary.hash():
-			return # No need to redraw, it's the same as the old dictionary.
-	_old_status_dictionary = status_dictionary
+func update_status(status_dictionary):
 	for i in staged_files_vbox.get_children():
 		i.free()
 	for i in unstaged_files_vbox.get_children():

@@ -4,7 +4,7 @@ extends Control
 var _simple_native
 var _dock_manager
 
-var _is_commit_disabled := false
+var _is_commit_disabled := true
 var _stage_and_commit := false
 
 onready var commit_name = $VBoxContainer/CommitName

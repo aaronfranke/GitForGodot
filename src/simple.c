@@ -223,16 +223,26 @@ INSTANCE_METHOD(get_data) {
 
 INSTANCE_METHOD(get_status) {
 	VERBOSE("get_status");
-	CHECK_ARG_COUNT(0);
+	CHECK_ARG_COUNT(1);
 	validate_git_repo_is_initialized();
 	// Get the index of the repository.
 	git_index *index;
 	git_repository_index(&index, repo);
+	// Get the status list.
+	godot_bool intensive_check = api->godot_variant_as_bool(p_args[0]);
 	git_status_list *status_list;
-	int64_t err = git_status_list_new(&status_list, repo, NULL);
+	git_status_options o = GIT_STATUS_OPTIONS_INIT;
+	if (intensive_check) {
+		o.flags = GIT_STATUS_OPT_UPDATE_INDEX;
+	} else {
+		o.flags = GIT_STATUS_OPT_EXCLUDE_SUBMODULES;
+	}
+	int64_t err = git_status_list_new(&status_list, repo, &o);
 	if (err) {
+		ERR("get_status: Error");
 		//return;
 	}
+	// Parse the status list.
 	int64_t status = (int64_t)git_status_list_entrycount(status_list);
 	godot_dictionary all_changes;
 	api->godot_dictionary_new(&all_changes);

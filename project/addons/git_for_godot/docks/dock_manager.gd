@@ -4,6 +4,7 @@ extends Node
 var auto_refresh_branches_delay := 0.1
 var auto_refresh_status_delay := 0.5
 var force_refresh := true
+var intensive_refresh := true
 
 var _editor_plugin
 var _simple_native
@@ -33,6 +34,7 @@ func _process(delta):
 		_refresh_branches()
 		_refresh_status()
 		force_refresh = false
+		intensive_refresh = false
 		return
 
 	if auto_refresh_branches_delay > 0.0:
@@ -46,7 +48,7 @@ func _process(delta):
 		_auto_refresh_status_time -= delta
 		if _auto_refresh_status_time < 0.0:
 			_auto_refresh_status_time += auto_refresh_status_delay
-			# Refreshing the status typically takes a large amount of time (hundreds of ms).
+			# Refreshing the status typically takes a large amount of time (1 to dozens of ms).
 			_refresh_status()
 
 
@@ -65,6 +67,12 @@ func setup(editor_plugin, simple_native, branch_dock, commit_dock, remote_dock, 
 	_commit_dock.get_node(@"VBoxContainer/StageStatus").wip_node = wip
 
 
+func refresh():
+	# User explicitly asked to refresh. Do a force refresh and intensive refresh.
+	force_refresh = true
+	intensive_refresh = true
+
+
 func _refresh_branches():
 	if _simple_native.has_method("get_branch_list"):
 		var branch_dictionary = _simple_native.get_branch_list()
@@ -80,10 +88,10 @@ func _refresh_branches():
 
 func _refresh_status():
 	if _simple_native.has_method("get_status"):
-		var status_dictionary = _simple_native.get_status()
+		var status_dictionary = _simple_native.get_status(intensive_refresh)
 		if (not force_refresh) and _old_status_dictionary:
 			if status_dictionary.hash() == _old_status_dictionary.hash():
 				return # No need to redraw, it's the same as the old dictionary.
-		_staging_dock.update_status()
+		_staging_dock.update_status(status_dictionary)
 	else:
 		printerr("DockManager: get_status failed!")
