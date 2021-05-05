@@ -1,5 +1,9 @@
 
 *.os
 src/*.obj
+
 # Scons
 .sconsign.dblite
+
+# Mac
+.DS_Store
