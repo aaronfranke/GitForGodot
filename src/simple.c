@@ -23,6 +23,7 @@ void validate_git_repo_is_initialized() {
 	godot_string dotgit = cptos(".git");
 	godot_string globalized_path_string;
 	{
+		// Same as this in GDScript: var globalized_path_variant = ProjectSettings.globalize_path("res://")
 		godot_object *ps_singleton = api->godot_global_get_singleton("ProjectSettings");
 		godot_method_bind *ps_globalize_path = api->godot_method_bind_get_method("ProjectSettings", "globalize_path");
 		godot_string res_string = cptos("res://");
