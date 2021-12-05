@@ -1,5 +1,6 @@
 #!python
-import os, subprocess
+from platform import machine
+import os
 
 opts = Variables([], ARGUMENTS)
 
@@ -12,6 +13,7 @@ env["STATIC_AND_SHARED_OBJECTS_ARE_THE_SAME"] = 1
 
 # Define our options. Use future-proofed names for platforms.
 platform_array = ["", "windows", "linuxbsd", "macos", "x11", "linux", "osx"]
+opts.Add(EnumVariable("arch", "Target architecture", "", ["x86_64", "arm64", "rv64"]))
 opts.Add(EnumVariable("target", "Compilation target", "debug", ["d", "debug", "r", "release"]))
 opts.Add(EnumVariable("platform", "Compilation platform", "", platform_array))
 opts.Add(EnumVariable("p", "Alias for 'platform'", "", platform_array))
@@ -45,16 +47,28 @@ if env["use_llvm"]:
     env["CC"] = "clang"
     env["CXX"] = "clang++"
 
+if env["arch"] == "":
+    if machine() == "arm64":
+        env["arch"] = "arm64"
+    elif machine() == "riscv64":
+        env["arch"] = "rv64gc"
+    else:
+        env["arch"] = "x86_64"
+
+print("Building for architecture " + env["arch"] + " on platform " + env["platform"])
+
 # Check our platform specifics
 if env["platform"] == "macos":
+    env.Append(CCFLAGS=["-arch", env["arch"]])
+    env.Append(LINKFLAGS=["-arch", env["arch"]])
     if env["target"] in ("debug", "d"):
-        env.Append(CCFLAGS=["-g", "-O2", "-arch", "x86_64"])
-        env.Append(LINKFLAGS=["-arch", "x86_64"])
+        env.Append(CCFLAGS=["-g", "-O2"])
     else:
-        env.Append(CCFLAGS=["-g", "-O3", "-arch", "x86_64"])
-        env.Append(LINKFLAGS=["-arch", "x86_64"])
+        env.Append(CCFLAGS=["-g", "-O3"])
 
 elif env["platform"] == "linuxbsd":
+    env.Append(CCFLAGS=["-march=" + env["arch"]])
+    env.Append(LINKFLAGS=["-march=" + env["arch"]])
     if env["target"] in ("debug", "d"):
         env.Append(CCFLAGS=["-fPIC", "-g3", "-Og"])
     else:
