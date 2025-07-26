@@ -3,4 +3,4 @@
 	url = https://github.com/godotengine/godot-headers
 [submodule "libgit2"]
 	path = libgit2
-	url = https://github.com/aaronfranke/libgit2
+	url = https://github.com/libgit2/libgit2
